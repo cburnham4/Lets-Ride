@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Let\'s Ride</string>
+    
+    <!-- Main Activity Labels -->
+    <string name="max_speed">MAX SPEED</string>
+    <string name="speed">SPEED</string>
+    <string name="average">AVG: </string>
+    <string name="elavation">ELEVATION</string>
+    <string name="max">MAX:</string>
+    <string name="min">MIN:</string>
+    <string name="duration">DURATION</string>
+</resources>

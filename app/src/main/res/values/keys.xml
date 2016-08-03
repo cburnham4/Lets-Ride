@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="ad_refresh_rate">1000</integer>
+    <string name="amazon_ad_id">8150a342e0254c8b8af0ec3fefdddf84</string>
+    <string name="admob_ad_id">ca-app-pub-8223005482588566/3188947938</string>
+</resources>
