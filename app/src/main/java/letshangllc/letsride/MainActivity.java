@@ -9,10 +9,12 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
@@ -26,8 +28,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private static final long MIN_TIME_BW_UPDATES = 2000;
 
     /* VIEWS */
-    
-
+    private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
+        tvMinElevation, tvDuration;
+    private FloatingActionButton fabStartRecording;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +115,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void findViews(){
-
+        tvCurrentSpeed = (TextView) findViewById(R.id.tvCurrentSpeed);
+        tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
+        tvAvgSpeed = (TextView) findViewById(R.id.tvAvgSpeed);
+        tvCurrentElevation = (TextView) findViewById(R.id.tvCurrentElevation);
+        tvMaxElevation = (TextView) findViewById(R.id.tvMaxElevation);
+        tvMinElevation = (TextView) findViewById(R.id.tvMinElevation);
+        tvDuration = (TextView) findViewById(R.id.tvDuration);
     }
 
     @Override
