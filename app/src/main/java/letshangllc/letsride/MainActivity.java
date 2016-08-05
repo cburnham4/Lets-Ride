@@ -1,12 +1,12 @@
 package letshangllc.letsride;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,8 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.Locale;
+
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -27,9 +31,22 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     // The minimum time beetwen updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 2000;
 
+    /* Recording Variables */
+    private boolean isRecording = false;
+    private double maxSpeed = 0;
+    private double minElevation = Double.MAX_VALUE;
+    private double maxElevation = 0;
+
+    /* Timing Variables */
+    private StopWatch stopWatch = new StopWatch();
+    private Handler handler = new Handler();
+
+    /* Location Variables */
+    private LocationManager locationManager;
+
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
-        tvMinElevation, tvDuration;
+            tvMinElevation, tvDuration;
     private FloatingActionButton fabStartRecording;
 
     @Override
@@ -38,10 +55,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         setContentView(R.layout.activity_main);
 
         findViews();
-        requestPermission();
     }
 
-    private void requestPermission() {
+    private void requestPermissionAndStart() {
         /* If permissions not allowed then request them */
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{
@@ -62,8 +78,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     }
 
     private void startLocationListener() {
+        isRecording = true;
         try {
-            LocationManager locationManager = (LocationManager) this
+            locationManager = (LocationManager) this
                     .getSystemService(AppCompatActivity.LOCATION_SERVICE);
 
             // getting GPS status
@@ -82,19 +99,21 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             } else {
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {}
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                }
 
                 if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-
+                    startTimer();
                     Log.d("Network", "Network");
-                }else if (isGPSEnabled) {
+                } else if (isGPSEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    startTimer();
                 }
 
 
@@ -106,11 +125,39 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    private void startTimer(){
+        /* Start the timer */
+        stopWatch.start();
+        /* Start the handler to request times from stopwatch */
+        handler.post(updateTimer);
+    }
+
+    private void stopRecording() {
+        isRecording = false;
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Enbable Location Services", Toast.LENGTH_LONG).show();
+            return;
+        }
+        locationManager.removeUpdates(this);
+        stopWatch.stop();
+    }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
+            double speed = location.getSpeed();
+            double elivation = location.getAltitude();
+            tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed));
+            tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
 
+            if(speed>maxSpeed){
+                maxSpeed = speed;
+                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed));
+            }
+            if(elivation  > maxElevation){
+                tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+            }
         }
     }
 
@@ -122,8 +169,41 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvMaxElevation = (TextView) findViewById(R.id.tvMaxElevation);
         tvMinElevation = (TextView) findViewById(R.id.tvMinElevation);
         tvDuration = (TextView) findViewById(R.id.tvDuration);
+        fabStartRecording = (FloatingActionButton) findViewById(R.id.fabStartRecording);
+
+        fabStartRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isRecording){
+                    fabStartRecording.setImageResource(R.drawable.ic_pause_white_48dp);
+                    requestPermissionAndStart();
+                }else{
+                    fabStartRecording.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    stopRecording();
+                }
+
+            }
+        });
     }
 
+    public Runnable updateTimer = new Runnable() {
+        public void run() {
+
+            /* Remove callbacks on stop */
+            //handler.removeCallbacks(updateTimer);
+
+            int[] times = stopWatch.getHourMinSecs();
+
+            /* Update the timer*/
+            tvDuration.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
+                    times[1],times[2]));
+
+            /* Run updateTimte again in 100ms */
+            handler.postDelayed(this, 300);
+
+        }};
+
+    /* Unused Location Listener functions */
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
 
