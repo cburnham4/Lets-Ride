@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -258,6 +259,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvDuration = (TextView) findViewById(R.id.tvDuration);
         fabStartPauseRecording = (FloatingActionButton) findViewById(R.id.fabStartPauseRecording);
         fabStopRecording = (FloatingActionButton) findViewById(R.id.fabStopRecording);
+        ImageView imgSettings = (ImageView) findViewById(R.id.imgSettings);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override

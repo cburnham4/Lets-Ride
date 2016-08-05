@@ -3,7 +3,7 @@
 
     <!-- Permissions -->
     <string name="enable_location_service">Enable Location Services</string>
-    
+
     <!-- Main Activity Labels -->
     <string name="max_speed">MAX SPEED</string>
     <string name="speed">SPEED</string>

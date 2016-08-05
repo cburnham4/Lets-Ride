@@ -7,19 +7,39 @@
     android:background="@drawable/gradient_bg"
     android:orientation="vertical">
 
+
+
+
     <!-- Current Speed Layout -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/speed"
-            android:textSize="@dimen/label_big"
-            android:gravity="center"
-            android:textColor="@color/primary_light"/>
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/speed"
+                android:textSize="@dimen/label_big"
+                android:gravity="center"
+                android:textColor="@color/primary_light"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_settings_white_36dp"
+                android:clickable="true"
+                android:paddingRight="@dimen/unit_padding"
+                android:id="@+id/imgSettings"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
