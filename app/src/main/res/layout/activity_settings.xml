@@ -1,12 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@drawable/gradient_bg"
+    android:orientation="vertical"
     tools:context="letshangllc.letsride.SettingsActivity">
 
-</RelativeLayout>
+    <!-- Speed Settings -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/speed_units"
+            android:textSize="@dimen/section_title_sz"
+            android:gravity="center"
+            android:textColor="@color/primary_light"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/selection_box_margin"
+                android:text="mph"
+                android:id="@+id/tvMPHSelection"
+                android:background="@color/primary_dark"
+                android:textColor="@color/white"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/selection_box_margin"
+                android:text="m/s"
+                android:id="@+id/tvMPSSelection"
+                android:background="@color/primary_light"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="@dimen/selection_box_margin"
+                android:text="km/h"
+                android:id="@+id/tvKMHSelection"
+                android:background="@color/primary_light"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <!--- DIVIDING LINE -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/accent"
+        />
+
+    <!-- Speed Settings -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/elevation_units"
+            android:textSize="@dimen/section_title_sz"
+            android:gravity="center"
+            android:textColor="@color/primary_light"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_margin="@dimen/activity_horizontal_margin">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="ft"
+                android:id="@+id/tvFeetSelection"
+                android:background="@color/primary_dark"
+                android:textColor="@color/white"
+
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="mi"
+                android:textSize="16sp"
+                android:id="@+id/tvMileSelection"
+                android:background="@color/primary_light"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="m"
+                android:id="@+id/tvMeterSelection"
+                android:background="@color/primary_light"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="8dp"
+                android:text="km"
+                android:id="@+id/tvKiloMeterSelection"
+                android:background="@color/primary_light"
+                android:clickable="true"
+                android:gravity="center"
+                />
+
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/confirm_button_vertical_margins"
+        android:layout_marginLeft="@dimen/confirm_button_side_margins"
+        android:layout_marginRight="@dimen/confirm_button_side_margins"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_settings_selector"/>
+
+</LinearLayout>

@@ -15,4 +15,9 @@
 
     <string name="empty">--.--</string>
     <string name="time_zero">00:00:00</string>
+
+    <!-- Setting Activity -->
+    <string name="speed_units">Speed Units</string>
+    <string name="elevation_units">Elevation Units</string>
+    <string name="save">Confirm Changes</string>
 </resources>

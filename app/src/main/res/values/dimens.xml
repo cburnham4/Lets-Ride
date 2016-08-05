@@ -13,4 +13,10 @@
     <dimen name="value_padding">8dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
+
+    <!-- Settings -->
+    <dimen name="section_title_sz">34sp</dimen>
+    <dimen name="selection_box_margin">8dp</dimen>
+    <dimen name="confirm_button_side_margins">16dp</dimen>
+    <dimen name="confirm_button_vertical_margins">32dp</dimen>
 </resources>

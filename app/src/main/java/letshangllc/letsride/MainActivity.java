@@ -286,6 +286,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 stopRecording();
             }
         });
+
+        imgSettings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent =  new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     public Runnable updateTimer = new Runnable() {
