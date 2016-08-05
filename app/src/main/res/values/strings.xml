@@ -9,4 +9,7 @@
     <string name="max">MAX:</string>
     <string name="min">MIN:</string>
     <string name="duration">DURATION</string>
+
+    <string name="empty">--.--</string>
+    <string name="time_zero">00:00:00</string>
 </resources>

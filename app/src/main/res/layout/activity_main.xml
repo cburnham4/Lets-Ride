@@ -7,6 +7,7 @@
     android:background="@drawable/gradient_bg"
     android:orientation="vertical">
 
+    <include layout="@layout/toolbar"/>
     <!-- Current Speed Layout -->
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="32.56"
+                android:text="@string/empty"
                 android:textSize="@dimen/speed_big"
                 android:gravity="right"
                 android:textColor="@color/white"
@@ -57,31 +58,33 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <!-- Max Speed -->
         <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:layout_weight="1"
-        >
-        <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/max"
-            android:textSize="@dimen/regular_text_size"
-            android:textColor="@color/white"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/max"
+                android:textSize="@dimen/regular_text_size"
+                android:textColor="@color/white"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="48.0"
-            android:paddingStart="@dimen/value_padding"
-            android:paddingLeft="@dimen/value_padding"
-            android:textSize="@dimen/regular_text_size"
-            android:textColor="@color/white"
-            android:id="@+id/tvMaxSpeed" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/empty"
+                android:paddingStart="@dimen/value_padding"
+                android:paddingLeft="@dimen/value_padding"
+                android:textSize="@dimen/regular_text_size"
+                android:textColor="@color/white"
+                android:id="@+id/tvMaxSpeed" />
         </LinearLayout>
 
+        <!-- Average Speed -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -99,7 +102,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="23.57"
+                android:text="@string/empty"
 
                 android:textSize="@dimen/regular_text_size"
                 android:textColor="@color/white"
@@ -141,7 +144,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="1300"
+                android:text="@string/empty"
                 android:textSize="@dimen/speed_big"
                 android:gravity="right"
                 android:textColor="@color/white"
@@ -184,7 +187,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2503"
+                android:text="@string/empty"
                 android:paddingStart="@dimen/value_padding"
                 android:paddingLeft="@dimen/value_padding"
                 android:textSize="@dimen/regular_text_size"
@@ -209,7 +212,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="915"
+                android:text="@string/empty"
                 android:paddingStart="@dimen/value_padding"
                 android:paddingLeft="@dimen/value_padding"
                 android:textSize="@dimen/regular_text_size"
@@ -250,7 +253,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="04:16:15"
+                android:text="@string/time_zero"
                 android:textSize="@dimen/speed_big"
 
                 android:textColor="@color/white"

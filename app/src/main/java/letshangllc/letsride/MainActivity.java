@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 
@@ -33,9 +34,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     /* Recording Variables */
     private boolean isRecording = false;
-    private double maxSpeed = 0;
+    private double maxSpeed = -1;
     private double minElevation = Double.MAX_VALUE;
-    private double maxElevation = 0;
+    private double maxElevation = -1;
+    private Speed speed = new Speed();
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         }
     }
 
+    /* TODO: Create Enable location method */
     private void startLocationListener() {
         isRecording = true;
         try {
@@ -102,18 +105,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 }
 
-                if (isNetworkEnabled) {
+                if (isNetworkEnabled && isGPSEnabled) {
+                    locationManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER,
+                            MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                    locationManager.requestLocationUpdates(
+                            LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
+                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
+                    startTimer();
+                } else if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
                     startTimer();
-                    Log.d("Network", "Network");
-                } else if (isGPSEnabled) {
+                } else if(isGPSEnabled){
                     locationManager.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+
                     startTimer();
+                } else{
+                    Toast.makeText(this, "Enable Location Services", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -138,9 +154,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             Toast.makeText(this, "Enbable Location Services", Toast.LENGTH_LONG).show();
             return;
         }
-        tvDuration.setText("00:00:00");
+        tvDuration.setText(getString(R.string.time_zero));
         locationManager.removeUpdates(this);
         stopWatch.stop();
+        speed.speeds.clear();
         handler.removeCallbacks(updateTimer);
     }
 
@@ -154,18 +171,35 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
-            double speed = location.getSpeed();
+            double currentSpeed = location.getSpeed();
             double elivation = location.getAltitude();
-            tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed));
-            tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+            tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", currentSpeed));
 
-            if(speed>maxSpeed){
-                maxSpeed = speed;
-                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed));
+            speed.speeds.add(currentSpeed);
+
+            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageSpeed()));
+
+            if(currentSpeed>maxSpeed){
+                maxSpeed = currentSpeed;
+                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", currentSpeed));
             }
-            if(elivation  > maxElevation){
-                tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+
+            /* Do nothing if elivation is 0 because it is not accurate */
+            if (elivation != 0){
+                tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+
+                if(elivation  > maxElevation){
+                    tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+                    maxElevation = elivation;
+                }
+                if(elivation < minElevation && minElevation!= 0){
+                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+                    minElevation = elivation;
+                }
             }
+
+
+
         }
     }
 
