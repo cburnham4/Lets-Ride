@@ -7,7 +7,6 @@
     android:background="@drawable/gradient_bg"
     android:orientation="vertical">
 
-    <include layout="@layout/toolbar"/>
     <!-- Current Speed Layout -->
     <LinearLayout
         android:layout_width="match_parent"
