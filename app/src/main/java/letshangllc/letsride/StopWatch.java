@@ -6,6 +6,8 @@ package letshangllc.letsride;
 public class StopWatch {
     private long startTime = 0;
     private long stopTime = 0;
+    private long pauseTime = 0;
+    private long currentIntervalTime = 0;
     private boolean running = false;
 
 
@@ -17,14 +19,20 @@ public class StopWatch {
 
     public void stop() {
         this.stopTime = System.currentTimeMillis();
+        pauseTime = 0;
         this.running = false;
+    }
+
+    public void pause(){
+        pauseTime += System.currentTimeMillis() - startTime;
+        this.running =false;
     }
 
 
     // elaspsed time in milliseconds
     private long getElapsedTime() {
         if (running) {
-            return System.currentTimeMillis() - startTime;
+            return System.currentTimeMillis() - startTime +pauseTime;
         }
         return stopTime - startTime;
     }
@@ -41,7 +49,8 @@ public class StopWatch {
     public int[] getHourMinSecs(){
         int[] times = new int[3];
 
-        long milliseconds = getElapsedTime();
+        currentIntervalTime = System.currentTimeMillis() - startTime;
+        long milliseconds = currentIntervalTime + pauseTime;
         int hours = (int) milliseconds / (60 * 60 * 1000);
         milliseconds -= hours * (60 * 60 * 1000);
         int minutes = (int) milliseconds / (60 * 1000);

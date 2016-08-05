@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
             tvMinElevation, tvDuration;
-    private FloatingActionButton fabStartRecording;
+    private FloatingActionButton fabStartPauseRecording, fabStopRecording;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,8 +138,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             Toast.makeText(this, "Enbable Location Services", Toast.LENGTH_LONG).show();
             return;
         }
+        tvDuration.setText("00:00:00");
         locationManager.removeUpdates(this);
         stopWatch.stop();
+        handler.removeCallbacks(updateTimer);
+    }
+
+    private void pauseRecording(){
+        isRecording = false;
+        Log.i(TAG, "PAUSE");
+        stopWatch.pause();
     }
 
     @Override
@@ -169,19 +177,32 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvMaxElevation = (TextView) findViewById(R.id.tvMaxElevation);
         tvMinElevation = (TextView) findViewById(R.id.tvMinElevation);
         tvDuration = (TextView) findViewById(R.id.tvDuration);
-        fabStartRecording = (FloatingActionButton) findViewById(R.id.fabStartRecording);
+        fabStartPauseRecording = (FloatingActionButton) findViewById(R.id.fabStartPauseRecording);
+        fabStopRecording = (FloatingActionButton) findViewById(R.id.fabStopRecording);
 
-        fabStartRecording.setOnClickListener(new View.OnClickListener() {
+        fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /* If not recording then start recording */
                 if(!isRecording){
-                    fabStartRecording.setImageResource(R.drawable.ic_pause_white_48dp);
+                    fabStartPauseRecording.setImageResource(R.drawable.ic_pause_white_48dp);
+                    fabStopRecording.setVisibility(View.GONE);
                     requestPermissionAndStart();
+                    /* If it is recording the pause it */
                 }else{
-                    fabStartRecording.setImageResource(R.drawable.ic_play_arrow_white_48dp);
-                    stopRecording();
+                    fabStartPauseRecording.setImageResource(R.drawable.ic_play_arrow_white_48dp);
+                    fabStopRecording.setVisibility(View.VISIBLE);
+                    pauseRecording();
                 }
+            }
+        });
 
+        fabStopRecording.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* TODO: Store Data */
+                fabStopRecording.setVisibility(View.GONE);
+                stopRecording();
             }
         });
     }
@@ -191,15 +212,17 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
             /* Remove callbacks on stop */
             //handler.removeCallbacks(updateTimer);
+            if(isRecording){
+                int[] times = stopWatch.getHourMinSecs();
 
-            int[] times = stopWatch.getHourMinSecs();
+                /* Update the timer*/
+                tvDuration.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
+                        times[1],times[2]));
 
-            /* Update the timer*/
-            tvDuration.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
-                    times[1],times[2]));
+                /* Run updateTimte again in 100ms */
+                handler.postDelayed(this, 300);
+            }
 
-            /* Run updateTimte again in 100ms */
-            handler.postDelayed(this, 300);
 
         }};
 
