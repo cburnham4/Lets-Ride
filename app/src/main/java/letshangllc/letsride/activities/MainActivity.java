@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
+import letshangllc.letsride.AdsHelper;
 import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
@@ -81,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         this.setupViews();
         this.requestPermission();
         this.requestLocationEnabled();
+
+        AdsHelper adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
+        adsHelper.runAds();
     }
 
     private void getUserSettings(){

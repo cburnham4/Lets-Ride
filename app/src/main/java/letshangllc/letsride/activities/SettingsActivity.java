@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import letshangllc.letsride.AdsHelper;
 import letshangllc.letsride.R;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -25,6 +26,9 @@ public class SettingsActivity extends AppCompatActivity {
 
         getValues();
         findViews();
+        AdsHelper adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_settings), this);
+        adsHelper.runAds();
+
     }
 
     private void getValues(){
