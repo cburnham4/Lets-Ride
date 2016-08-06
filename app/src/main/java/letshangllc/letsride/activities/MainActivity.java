@@ -265,21 +265,23 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
                     * speedUnits.multiplier));
 
-            if(currentSpeed> speed.getMaxSpeeds()){
-                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
-            }
+            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
+
 
             elevation.createOutliers();
             /* Do nothing if elivation is 0 because it is not accurate */
             if (currentElevation != 0){
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
-                if(currentElevation  > elevation.getMaxElevation()){
-                    tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
+                tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
+                        elevation.getMaxElevation() *elevationUnits.multiplier));
+
+                double minElevation = elevation.getMinElevation();
+                if(minElevation != 0){
+                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
+                            minElevation *elevationUnits.multiplier));
                 }
-                if(currentElevation < elevation.getMinElevation()){
-                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
-                }
+
             }
         }
     }
@@ -356,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private  void updateViewForUnits(){
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(elevationUnits.label);
+
         tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers() * speedUnits.multiplier));
         tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
         tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMaxElevation() * elevationUnits.multiplier));

@@ -1,6 +1,7 @@
 package letshangllc.letsride.data_objects;
 
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +11,15 @@ import java.util.List;
  * All Speeds are to be recorded and saved as Meters per seconds
  */
 public class Speed {
+    private String TAG = Speed.class.getSimpleName();
     public ArrayList<Double> allSpeeds;
     public ArrayList<Double> normalSpeeds;
     public ArrayList<Double> outlierSpeeds;
-    private double maxSpeed;
 
     public Speed() {
-        this.maxSpeed = 0;
         allSpeeds = new ArrayList<>();
+        normalSpeeds = new ArrayList<>();
+        outlierSpeeds = new ArrayList<>();
     }
 
     private double getAverageAllSpeed(){
@@ -98,6 +100,7 @@ public class Speed {
                 max = speed;
             }
         }
+        Log.i(TAG, "Max: " + max);
         return max;
     }
 }

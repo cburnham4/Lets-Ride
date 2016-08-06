@@ -12,6 +12,8 @@ public class Elevation {
 
     public Elevation() {
         allElevations = new ArrayList<>();
+        normalElevations = new ArrayList<>();
+        outlierElevations = new ArrayList<>();
     }
 
     /* Create the list of outliers and normal data points */
@@ -41,6 +43,9 @@ public class Elevation {
     }
 
     public double getMinElevation(){
+        if (normalElevations.size() == 0){
+            return 0;
+        }
         double min = Double.MAX_VALUE;
         for(Double elevation: allElevations){
             if (min > elevation && elevation != 0){

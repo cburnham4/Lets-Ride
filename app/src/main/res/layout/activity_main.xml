@@ -1,314 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity"
     android:background="@drawable/gradient_bg"
-    android:orientation="vertical">
+    >
 
-
-
-
-    <!-- Current Speed Layout -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Current Speed Layout -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/speed"
-                android:textSize="@dimen/label_big"
+                android:orientation="vertical">
+
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/speed"
+                        android:textSize="@dimen/label_big"
+                        android:gravity="center"
+                        android:textColor="@color/primary_light"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_settings_white_36dp"
+                        android:clickable="true"
+                        android:paddingRight="@dimen/unit_padding"
+                        android:id="@+id/imgSettings"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
+                </RelativeLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:textSize="@dimen/speed_big"
+                        android:gravity="right"
+                        android:textColor="@color/white"
+                        android:id="@+id/tvCurrentSpeed" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="mph"
+                        android:id="@+id/tvSpeedUnits"
+                        android:textSize="@dimen/speed_big_units"
+                        android:paddingLeft="@dimen/unit_padding"
+                        android:gravity="left"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Max and Average Speed -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <!-- Max Speed -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:paddingStart="@dimen/value_padding"
+                        android:paddingLeft="@dimen/value_padding"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"
+                        android:id="@+id/tvMaxSpeed" />
+                </LinearLayout>
+
+                <!-- Average Speed -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/average"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"
+                        android:paddingStart="@dimen/value_padding"
+                        android:paddingLeft="@dimen/value_padding"
+                        android:id="@+id/tvAvgSpeed" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--- DIVIDING LINE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent"
+                />
+
+            <!-- Current Elevation Layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/elavation"
+                    android:textSize="@dimen/label_big"
+                    android:gravity="center"
+                    android:textColor="@color/primary_light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:textSize="@dimen/speed_big"
+                        android:gravity="right"
+                        android:textColor="@color/white"
+                        android:id="@+id/tvCurrentElevation" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="m"
+                        android:id="@+id/tvElevationUnits"
+                        android:textSize="@dimen/speed_big_units"
+                        android:paddingLeft="@dimen/unit_padding"
+                        android:gravity="left"
+                        android:textColor="@color/white"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Max , Min and Average Elevation -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/max"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:paddingStart="@dimen/value_padding"
+                        android:paddingLeft="@dimen/value_padding"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"
+                        android:id="@+id/tvMaxElevation" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_weight="1"
+                    >
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/min"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/empty"
+                        android:paddingStart="@dimen/value_padding"
+                        android:paddingLeft="@dimen/value_padding"
+                        android:textSize="@dimen/regular_text_size"
+                        android:textColor="@color/white"
+                        android:id="@+id/tvMinElevation" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!--- DIVIDING LINE -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/accent"
+                />
+
+            <!-- Current Elevation Layout -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/duration"
+                    android:textSize="@dimen/label_big"
+                    android:gravity="center"
+                    android:textColor="@color/primary_light"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/time_zero"
+                        android:textSize="@dimen/speed_big"
+
+                        android:textColor="@color/white"
+                        android:id="@+id/tvDuration" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+            <!-- Start Pause and Stop Floating Action Buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|center_horizontal"
                 android:gravity="center"
-                android:textColor="@color/primary_light"/>
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_settings_white_36dp"
-                android:clickable="true"
-                android:paddingRight="@dimen/unit_padding"
-                android:id="@+id/imgSettings"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabStartPauseRecording"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_play_arrow_white_48dp" />
 
+                <android.support.design.widget.FloatingActionButton
+                    android:id="@+id/fabStopRecording"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/fab_margin"
+                    android:src="@drawable/ic_stop_white_48dp"
+                    android:visibility="gone"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-                android:textSize="@dimen/speed_big"
-                android:gravity="right"
-                android:textColor="@color/white"
-                android:id="@+id/tvCurrentSpeed" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="mph"
-                android:id="@+id/tvSpeedUnits"
-                android:textSize="@dimen/speed_big_units"
-                android:paddingLeft="@dimen/unit_padding"
-                android:gravity="left"
-                android:textColor="@color/white"/>
+            </LinearLayout>
 
         </LinearLayout>
 
-
-    </LinearLayout>
-
-    <!-- Max and Average Speed -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <!-- Max Speed -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/max"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-                android:paddingStart="@dimen/value_padding"
-                android:paddingLeft="@dimen/value_padding"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"
-                android:id="@+id/tvMaxSpeed" />
-        </LinearLayout>
-
-        <!-- Average Speed -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/average"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"
-                android:paddingStart="@dimen/value_padding"
-                android:paddingLeft="@dimen/value_padding"
-                android:id="@+id/tvAvgSpeed" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!--- DIVIDING LINE -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent"
-        />
-
-    <!-- Current Elevation Layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/elavation"
-            android:textSize="@dimen/label_big"
-            android:gravity="center"
-            android:textColor="@color/primary_light"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-                android:textSize="@dimen/speed_big"
-                android:gravity="right"
-                android:textColor="@color/white"
-                android:id="@+id/tvCurrentElevation" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="m"
-                android:id="@+id/tvElevationUnits"
-                android:textSize="@dimen/speed_big_units"
-                android:paddingLeft="@dimen/unit_padding"
-                android:gravity="left"
-                android:textColor="@color/white"/>
-
-        </LinearLayout>
+    </ScrollView>
 
 
-    </LinearLayout>
-
-    <!-- Max , Min and Average Elevation -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/max"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-                android:paddingStart="@dimen/value_padding"
-                android:paddingLeft="@dimen/value_padding"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"
-                android:id="@+id/tvMaxElevation" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_weight="1"
-            >
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/min"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/empty"
-                android:paddingStart="@dimen/value_padding"
-                android:paddingLeft="@dimen/value_padding"
-                android:textSize="@dimen/regular_text_size"
-                android:textColor="@color/white"
-                android:id="@+id/tvMinElevation" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <!--- DIVIDING LINE -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/accent"
-        />
-
-    <!-- Current Elevation Layout -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/duration"
-            android:textSize="@dimen/label_big"
-            android:gravity="center"
-            android:textColor="@color/primary_light"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/time_zero"
-                android:textSize="@dimen/speed_big"
-
-                android:textColor="@color/white"
-                android:id="@+id/tvDuration" />
-
-        </LinearLayout>
 
 
-    </LinearLayout>
 
-    <!-- Start Pause and Stop Floating Action Buttons -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabStartPauseRecording"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_play_arrow_white_48dp" />
-
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabStopRecording"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            android:src="@drawable/ic_stop_white_48dp"
-            android:visibility="gone"/>
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</RelativeLayout>
