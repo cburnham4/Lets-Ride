@@ -18,4 +18,18 @@ public enum ElevationUnits {
         this.index = index;
         this.multiplier = multiplier;
     }
+
+    public static ElevationUnits getElevationUnits(int index){
+        switch (index){
+            case 0:
+                return FEET;
+            case 1:
+                return MILE;
+            case 2:
+                return METER;
+            case 3:
+                return KILOMETER;
+        }
+        return FEET;
+    }
 }

@@ -2,6 +2,7 @@ package letshangllc.letsride.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,12 +23,17 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
-import letshangllc.letsride.Speed;
+import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.StopWatch;
+import letshangllc.letsride.enums.ElevationUnits;
+import letshangllc.letsride.enums.SpeedUnits;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
     private final static String TAG = MainActivity.class.getSimpleName();
+
+    /* SEtting intent request */
+    private final static int SETTING_REQUEST = 10;
 
     /* Permission Variables */
     private final static int REQUEST_LOCATION_PERMISSIONS = 0;
@@ -39,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     // The minimum time beetwen updates in milliseconds
     private static final long MIN_TIME_BW_UPDATES = 2000;
 
-    /* Recording Variables */
+    /* Recording Variables
+    *  UNITS ARE STORES AS METERS AND METERS PER SECOND*/
     private boolean isRecording = false;
     private double maxSpeed = -1;
     private double minElevation = Double.MAX_VALUE;
@@ -54,9 +61,13 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private LocationManager locationManager;
     private boolean locationEnabled = false;
 
+    /* Units */
+    private SpeedUnits speedUnits;
+    private ElevationUnits elevationUnits;
+
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
-            tvMinElevation, tvDuration;
+            tvMinElevation, tvDuration, tvSpeedUnits, tvElevationUnits;
     private FloatingActionButton fabStartPauseRecording, fabStopRecording;
 
     @Override
@@ -64,9 +75,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        findViews();
+        this.getUserSettings();
+        this.findViews();
+        this.setupViews();
         this.requestPermission();
         this.requestLocationEnabled();
+    }
+
+    private void getUserSettings(){
+        SharedPreferences settings = getSharedPreferences(getString(R.string.user_preferences), 0);
+        int speedUnitIndex = settings.getInt(getString(R.string.user_pref_speed_unit_index), 0 );
+        int elevationUnitIndex = settings.getInt(getString(R.string.user_pref_elevation_index),0 );
+
+        speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
+        elevationUnits = ElevationUnits.getElevationUnits(elevationUnitIndex);
     }
 
     /* Make sure the user has location permissions enabled */
@@ -189,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Log.i(TAG, "Stop Recording ");
         isRecording = false;
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Enbable Location Services", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
             return;
         }
         resetViewsAndData();
@@ -203,8 +225,14 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         isRecording = false;
         Log.i(TAG, "PAUSE");
         stopWatch.pause();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
+            return;
+        }
+        locationManager.removeUpdates(this);
     }
 
+    /* TODO: Make it work with changing variables during recording */
     private void resetViewsAndData(){
         tvDuration.setText(getString(R.string.time_zero));
         tvCurrentSpeed.setText(getString(R.string.empty));
@@ -222,36 +250,36 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         if(location!= null){
             double currentSpeed = location.getSpeed();
             double elivation = location.getAltitude();
-            tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", currentSpeed));
-
             speed.speeds.add(currentSpeed);
 
-            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageSpeed()));
+            double speedInUnits = currentSpeed * speedUnits.multiplier;
+            double elivationInUnits = elivation *elevationUnits.multiplier;
+
+            tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
+            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageSpeed() * speedUnits.multiplier));
 
             if(currentSpeed>maxSpeed){
                 maxSpeed = currentSpeed;
-                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", currentSpeed));
+                tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             }
 
             /* Do nothing if elivation is 0 because it is not accurate */
             if (elivation != 0){
-                tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+                tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
                 if(elivation  > maxElevation){
-                    tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+                    tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
                     maxElevation = elivation;
                 }
                 if(elivation < minElevation && minElevation!= 0){
-                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elivation));
+                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
                     minElevation = elivation;
                 }
             }
-
-
-
         }
     }
 
+    /* Find Views */
     private void findViews(){
         tvCurrentSpeed = (TextView) findViewById(R.id.tvCurrentSpeed);
         tvMaxSpeed = (TextView) findViewById(R.id.tvMaxSpeed);
@@ -260,8 +288,19 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvMaxElevation = (TextView) findViewById(R.id.tvMaxElevation);
         tvMinElevation = (TextView) findViewById(R.id.tvMinElevation);
         tvDuration = (TextView) findViewById(R.id.tvDuration);
+        tvSpeedUnits = (TextView) findViewById(R.id.tvSpeedUnits);
+        tvElevationUnits = (TextView) findViewById(R.id.tvElevationUnits);
         fabStartPauseRecording = (FloatingActionButton) findViewById(R.id.fabStartPauseRecording);
         fabStopRecording = (FloatingActionButton) findViewById(R.id.fabStopRecording);
+
+
+    }
+
+    /* Set views text and listeners */
+    private void setupViews(){
+        tvSpeedUnits.setText(speedUnits.label);
+        tvElevationUnits.setText(elevationUnits.label);
+
         ImageView imgSettings = (ImageView) findViewById(R.id.imgSettings);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
@@ -294,9 +333,28 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             @Override
             public void onClick(View view) {
                 Intent intent =  new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SETTING_REQUEST);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SETTING_REQUEST){
+            getUserSettings();
+            updateViewForUnits();
+        }
+    }
+
+    /* Update the non current values for their new units */
+    private  void updateViewForUnits(){
+        tvSpeedUnits.setText(speedUnits.label);
+        tvElevationUnits.setText(elevationUnits.label);
+        tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageSpeed() * speedUnits.multiplier));
+        tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", maxSpeed * speedUnits.multiplier));
+        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", maxElevation * elevationUnits.multiplier));
+        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", minElevation * elevationUnits.multiplier));
     }
 
     public Runnable updateTimer = new Runnable() {

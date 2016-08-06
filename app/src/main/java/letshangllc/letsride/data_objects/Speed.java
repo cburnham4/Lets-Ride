@@ -1,4 +1,4 @@
-package letshangllc.letsride;
+package letshangllc.letsride.data_objects;
 
 import java.util.ArrayList;
 
