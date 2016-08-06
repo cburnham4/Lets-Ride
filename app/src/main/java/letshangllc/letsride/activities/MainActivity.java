@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     /* TODO: MOVE VARIABLES TO RESPECTIVE CLASSES */
     private boolean isRecording = false;
-    private double maxSpeed = -1;
     private double minElevation = Double.MAX_VALUE;
     private double maxElevation = -1;
     private Speed speed = new Speed();
@@ -246,6 +245,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
         speed.allSpeeds.clear();
     }
+
     @Override
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
@@ -261,8 +261,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
                     * speedUnits.multiplier));
 
-            if(currentSpeed>maxSpeed){
-                maxSpeed = currentSpeed;
+            if(currentSpeed> speed.getMaxSpeeds()){
                 tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             }
 
@@ -355,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(elevationUnits.label);
         tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers() * speedUnits.multiplier));
-        tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", maxSpeed * speedUnits.multiplier));
+        tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
         tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", maxElevation * elevationUnits.multiplier));
         tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", minElevation * elevationUnits.multiplier));
     }

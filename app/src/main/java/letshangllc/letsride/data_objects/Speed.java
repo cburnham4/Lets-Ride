@@ -20,6 +20,7 @@ public class Speed {
         allSpeeds = new ArrayList<>();
     }
 
+    /* TODO: Add outlier check for max */
     private double getAverageAllSpeed(){
         double count = 0;
         double sum = 0;
@@ -59,18 +60,19 @@ public class Speed {
         if (allSpeeds.size() == 0)
             return 0;
 
-        ArrayList<Double> normalNumbers = new ArrayList<>();
-        ArrayList<Double> outLierNumbers = new ArrayList<Double>();
+        /* Update Normal speeds whenever an average is needed */
+        normalSpeeds = new ArrayList<>();
+        outlierSpeeds = new ArrayList<Double>();
         double avg = getAverageAllSpeed();
         double standardDeviation = standardDeviation();
         for(Double speed: allSpeeds){
             if ((Math.abs(speed - avg)) > (2 * standardDeviation))
-                outLierNumbers.add(speed);
+                outlierSpeeds.add(speed);
             else
-                normalNumbers.add(speed);
+                normalSpeeds.add(speed);
         }
 
-        return getAverageFromList(normalNumbers);
+        return getAverageFromList(normalSpeeds);
     }
 
     /* Get standard deviation of speeds */
@@ -86,5 +88,16 @@ public class Speed {
         }
 
         return Math.sqrt( sum / ( allSpeeds.size() - 1 ) );
+    }
+
+    public double getMaxSpeeds(){
+        double max = -1;
+        for(Double speed: normalSpeeds){
+            /* Do not count speeds of 0 in average */
+            if(max < speed){
+                max = speed;
+            }
+        }
+        return max;
     }
 }
