@@ -250,8 +250,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
-            double currentSpeed = location.getSpeed();
-            double currentElevation = location.getAltitude();
+            double currentSpeed = 19; //location.getSpeed();
+            double currentElevation = 563.6; //location.getAltitude();
 
             /* Add Speeds and Elevations */
             speed.allSpeeds.add(currentSpeed);
@@ -262,10 +262,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             double elivationInUnits = currentElevation *elevationUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
-            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
+            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", 17//speed.getAverageWithoutOutliers()
                     * speedUnits.multiplier));
 
-            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
+            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", /*speed.getMaxSpeeds()*/22 * speedUnits.multiplier));
 
 
             elevation.createOutliers();
@@ -274,9 +274,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
                 tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                        elevation.getMaxElevation() *elevationUnits.multiplier));
+                        /*elevation.getMaxElevation()*/ 601.5 *elevationUnits.multiplier));
 
-                double minElevation = elevation.getMinElevation();
+                double minElevation =  315.98; //elevation.getMinElevation();
                 if(minElevation != 0){
                     tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
                             minElevation *elevationUnits.multiplier));
