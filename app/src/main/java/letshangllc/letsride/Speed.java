@@ -10,8 +10,7 @@ public class Speed {
     private double maxSpeed;
 
     public Speed() {
-        this.speeds = speeds;
-        this.maxSpeed = maxSpeed;
+        this.maxSpeed = 0;
         speeds = new ArrayList<>();
     }
 
