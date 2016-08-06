@@ -21,6 +21,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import letshangllc.letsride.AdsHelper;
 import letshangllc.letsride.R;
@@ -83,8 +85,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         this.requestPermission();
         this.requestLocationEnabled();
 
-        AdsHelper adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
-        adsHelper.runAds();
+        this.runAds();
     }
 
     private void getUserSettings(){
@@ -254,8 +255,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
-            double currentSpeed = 19; //location.getSpeed();
-            double currentElevation = 563.6; //location.getAltitude();
+            double currentSpeed = location.getSpeed();
+            double currentElevation = location.getAltitude();
 
             /* Add Speeds and Elevations */
             speed.allSpeeds.add(currentSpeed);
@@ -266,10 +267,10 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             double elivationInUnits = currentElevation *elevationUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
-            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", 17//speed.getAverageWithoutOutliers()
+            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
                     * speedUnits.multiplier));
 
-            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", /*speed.getMaxSpeeds()*/22 * speedUnits.multiplier));
+            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
 
 
             elevation.createOutliers();
@@ -278,9 +279,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
                 tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                        /*elevation.getMaxElevation()*/ 601.5 *elevationUnits.multiplier));
+                        elevation.getMaxElevation() *elevationUnits.multiplier));
 
-                double minElevation =  315.98; //elevation.getMinElevation();
+                double minElevation =  elevation.getMinElevation();
                 if(minElevation != 0){
                     tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
                             minElevation *elevationUnits.multiplier));
@@ -399,5 +400,20 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     @Override
     public void onProviderDisabled(String s) {
 
+    }
+
+    private AdsHelper adsHelper;
+    public void runAds(){
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
+
+        adsHelper.setUpAds();
+        int delay = 1000; // delay for 1 sec.
+        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                adsHelper.refreshAd();  // display the data
+            }
+        }, delay, period);
     }
 }

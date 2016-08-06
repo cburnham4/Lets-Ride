@@ -16,7 +16,7 @@ import com.amazon.device.ads.AdRegistration;
 /**
  * Created by cvburnha on 10/26/2015.
  */
-public class AdsHelper implements AdListener{
+public class AdsHelper implements AdListener {
     String amazon_id;
     String admob_id;
 
@@ -37,23 +37,12 @@ public class AdsHelper implements AdListener{
         this.view =view;
     }
 
-    public void runAds(){
-        this.setUpAds();
-        handler.post(runnable);
-    }
-    private Runnable runnable = new Runnable() {
-        @Override
-        public void run() {
-            refreshAd(); // display the data
-            handler.postDelayed(this, activity.getResources().getInteger(R.integer.ad_refresh_rate));
-        }
-    };
-
-    private void setUpAds(){
+    public void setUpAds(){
         AdRegistration.setAppKey(amazon_id);
         amazonAdView = new com.amazon.device.ads.AdLayout(activity, com.amazon.device.ads.AdSize.SIZE_320x50);
         amazonAdView.setListener(this);
         //AdRegistration.enableTesting(true);
+
         admobAdView = new com.google.android.gms.ads.AdView(activity);
         admobAdView.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
         admobAdView.setAdUnitId(admob_id);
@@ -111,19 +100,4 @@ public class AdsHelper implements AdListener{
 
     }
 
-    public void onDestroy()
-    {
-        handler.removeCallbacks(runnable);
-        this.amazonAdView.destroy();
-
-    }
-
-    public void onPause(){
-        handler.removeCallbacks(runnable);
-        this.amazonAdView.destroy();
-    }
-
-    public void onResume(){
-        this.setUpAds();
-    }
 }

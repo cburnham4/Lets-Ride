@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import letshangllc.letsride.AdsHelper;
 import letshangllc.letsride.R;
 
@@ -26,9 +29,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         getValues();
         findViews();
-        AdsHelper adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_settings), this);
-        adsHelper.runAds();
-
+        this.runAds();
     }
 
     private void getValues(){
@@ -122,5 +123,20 @@ public class SettingsActivity extends AppCompatActivity {
             setElevationSelection(index);
             elevationUnitIndex = index;
         }
+    }
+
+    private AdsHelper adsHelper;
+    public void runAds(){
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_settings), this);
+
+        adsHelper.setUpAds();
+        int delay = 1000; // delay for 1 sec.
+        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                adsHelper.refreshAd();  // display the data
+            }
+        }, delay, period);
     }
 }
