@@ -20,7 +20,6 @@ public class Speed {
         allSpeeds = new ArrayList<>();
     }
 
-    /* TODO: Add outlier check for max */
     private double getAverageAllSpeed(){
         double count = 0;
         double sum = 0;
@@ -90,6 +89,7 @@ public class Speed {
         return Math.sqrt( sum / ( allSpeeds.size() - 1 ) );
     }
 
+    /* Get max from the normal speeds */
     public double getMaxSpeeds(){
         double max = -1;
         for(Double speed: normalSpeeds){

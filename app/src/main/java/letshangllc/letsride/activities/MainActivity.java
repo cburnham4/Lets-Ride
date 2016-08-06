@@ -23,6 +23,7 @@ import android.widget.Toast;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
+import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.StopWatch;
 import letshangllc.letsride.enums.ElevationUnits;
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
 
     /* TODO: MOVE VARIABLES TO RESPECTIVE CLASSES */
     private boolean isRecording = false;
-    private double minElevation = Double.MAX_VALUE;
-    private double maxElevation = -1;
     private Speed speed = new Speed();
+    private Elevation elevation = new Elevation();
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -251,11 +251,15 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         Log.i(TAG, "Location Updated");
         if(location!= null){
             double currentSpeed = location.getSpeed();
-            double elivation = location.getAltitude();
-            speed.allSpeeds.add(currentSpeed);
+            double currentElevation = location.getAltitude();
 
+            /* Add Speeds and Elevations */
+            speed.allSpeeds.add(currentSpeed);
+            elevation.allElevations.add(currentElevation);
+
+            /* Convert speed and elevations to perferred units */
             double speedInUnits = currentSpeed * speedUnits.multiplier;
-            double elivationInUnits = elivation *elevationUnits.multiplier;
+            double elivationInUnits = currentElevation *elevationUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
@@ -265,17 +269,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             }
 
+            elevation.createOutliers();
             /* Do nothing if elivation is 0 because it is not accurate */
-            if (elivation != 0){
+            if (currentElevation != 0){
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
-                if(elivation  > maxElevation){
+                if(currentElevation  > elevation.getMaxElevation()){
                     tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
-                    maxElevation = elivation;
                 }
-                if(elivation < minElevation && minElevation!= 0){
+                if(currentElevation < elevation.getMinElevation()){
                     tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
-                    minElevation = elivation;
                 }
             }
         }
@@ -355,8 +358,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         tvElevationUnits.setText(elevationUnits.label);
         tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers() * speedUnits.multiplier));
         tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
-        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", maxElevation * elevationUnits.multiplier));
-        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", minElevation * elevationUnits.multiplier));
+        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMaxElevation() * elevationUnits.multiplier));
+        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMinElevation() * elevationUnits.multiplier));
     }
 
     public Runnable updateTimer = new Runnable() {
