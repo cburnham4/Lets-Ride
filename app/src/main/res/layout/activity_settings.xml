@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
     android:orientation="vertical"
-    tools:context="letshangllc.letsride.SettingsActivity">
+    tools:context=".activities.SettingsActivity">
 
     <!-- Speed Settings -->
     <LinearLayout
@@ -77,7 +77,7 @@
         android:background="@color/accent"
         />
 
-    <!-- Speed Settings -->
+    <!-- Elevation Settings -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -156,6 +156,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/btnConfirmSettings"
         android:layout_marginTop="@dimen/confirm_button_vertical_margins"
         android:layout_marginLeft="@dimen/confirm_button_side_margins"
         android:layout_marginRight="@dimen/confirm_button_side_margins"

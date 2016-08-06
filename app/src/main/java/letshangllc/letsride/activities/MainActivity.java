@@ -1,4 +1,4 @@
-package letshangllc.letsride;
+package letshangllc.letsride.activities;
 
 import android.Manifest;
 import android.content.Intent;
@@ -19,8 +19,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Locale;
+
+import letshangllc.letsride.R;
+import letshangllc.letsride.Speed;
+import letshangllc.letsride.StopWatch;
 
 
 public class MainActivity extends AppCompatActivity implements LocationListener {

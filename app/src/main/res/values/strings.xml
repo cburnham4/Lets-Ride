@@ -20,4 +20,9 @@
     <string name="speed_units">Speed Units</string>
     <string name="elevation_units">Elevation Units</string>
     <string name="save">Confirm Changes</string>
+    
+    <!-- User Preferences -->
+    <string name="user_preferences">USER_PREFERENCES</string>
+    <string name="user_pref_speed_unit_index">SPEED_INDEX_UNIT</string>
+    <string name="user_pref_elevation_index">ELEVATION_INDEX_UNIT</string>
 </resources>
