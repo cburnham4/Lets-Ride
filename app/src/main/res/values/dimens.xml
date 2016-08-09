@@ -19,4 +19,10 @@
     <dimen name="selection_box_margin">8dp</dimen>
     <dimen name="confirm_button_side_margins">16dp</dimen>
     <dimen name="confirm_button_vertical_margins">32dp</dimen>
+
+    <!-- History -->
+    <dimen name="rv_item_padding_horizontal">16dp</dimen>
+    <dimen name="rv_item_height">72dp</dimen>
+    <dimen name="rv_top_text_sz">16sp</dimen>
+    <dimen name="rv_secondary_text_sz">14sp</dimen>
 </resources>
