@@ -29,5 +29,6 @@ public class SQLCreateTables {
             "CREATE TABLE " + DBTableConstants.DATES_TABLE + " ( " +
                     DBTableConstants.DATE_ID + " integer primary key AUTOINCREMENT, " +
                     DBTableConstants.DATE_STRING + " text, " +
+                    DBTableConstants.RUN_DURATION + " real" +
                     " )";
 }

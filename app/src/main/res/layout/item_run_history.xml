@@ -1,8 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent" android:layout_height="@dimen/rv_item_height">
 
     <ImageView
-        android:layout_width="48dp"
-        android:layout_height="48dp" />
+        android:layout_width="@dimen/rv_icon_item_size"
+        android:layout_height="@dimen/rv_icon_item_size"
+        android:layout_margin="@dimen/rv_item_padding_horizontal"
+        android:src="@drawable/distance"
+        android:id="@+id/imgIcon"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical"
+        android:layout_toEndOf="@+id/imgIcon"
+        android:layout_toRightOf="@+id/imgIcon">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="@dimen/rv_top_text_sz"
+            android:id="@+id/tvMainText"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/rv_secondary_text_sz"
+            android:id="@+id/tvSecondaryText"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/rv_secondary_text_sz"
+            android:id="@+id/tvRunDate"/>
+    </LinearLayout>
+
 </RelativeLayout>

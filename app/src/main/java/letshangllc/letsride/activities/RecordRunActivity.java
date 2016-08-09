@@ -29,7 +29,7 @@ import letshangllc.letsride.R;
 import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
-import letshangllc.letsride.StopWatch;
+import letshangllc.letsride.objects.StopWatch;
 import letshangllc.letsride.enums.ElevationUnits;
 import letshangllc.letsride.enums.SpeedUnits;
 

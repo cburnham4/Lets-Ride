@@ -22,6 +22,7 @@
 
     <!-- History -->
     <dimen name="rv_item_padding_horizontal">16dp</dimen>
+    <dimen name="rv_icon_item_size">48dp</dimen>
     <dimen name="rv_item_height">72dp</dimen>
     <dimen name="rv_top_text_sz">16sp</dimen>
     <dimen name="rv_secondary_text_sz">14sp</dimen>
