@@ -57,6 +57,7 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.distance));
         viewHolder.tvSecondaryText.setText(item.timeInMilli +"");
         viewHolder.tvDate.setText(item.date);
+        viewHolder.tvAvgSpeed.setText(item.maxSpeed+"");
 
     }
 
@@ -71,12 +72,14 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         public TextView tvMainText;
         public TextView tvSecondaryText;
         public TextView tvDate;
+        public TextView tvAvgSpeed;
 
         public ViewHolder(View view) {
             super(view);
             tvMainText = (TextView) view.findViewById(R.id.tvMainText);
             tvSecondaryText = (TextView) view.findViewById(R.id.tvSecondaryText);
             tvDate = (TextView) view.findViewById(R.id.tvRunDate);
+            tvAvgSpeed = (TextView) view.findViewById(R.id.tvAvgSpeed);
         }
     }
 
