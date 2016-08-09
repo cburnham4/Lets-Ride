@@ -11,4 +11,12 @@ public class PastRunItem {
     public double maxSpeed;
     public double timeInMilli;
 
+    public PastRunItem(int runId, int dayId, String date, double distance, double maxSpeed, double timeInMilli) {
+        this.runId = runId;
+        this.dayId = dayId;
+        this.date = date;
+        this.distance = distance;
+        this.maxSpeed = maxSpeed;
+        this.timeInMilli = timeInMilli;
+    }
 }
