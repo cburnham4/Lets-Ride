@@ -54,7 +54,7 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         // - replace the contents of the view with that itemsData
         final PastRunItem item = items.get(position);
 
-        viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.distance));
+        viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.getDistance()*1000));
         viewHolder.tvSecondaryText.setText(item.timeInMilli +"");
         viewHolder.tvDate.setText(item.date);
         viewHolder.tvAvgSpeed.setText(item.maxSpeed+"");

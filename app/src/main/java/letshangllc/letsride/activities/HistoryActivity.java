@@ -22,6 +22,7 @@ import letshangllc.letsride.R;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
+import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
 
 public class HistoryActivity extends AppCompatActivity {
@@ -31,6 +32,8 @@ public class HistoryActivity extends AppCompatActivity {
     private ArrayList<PastRunItem> pastRunItems;
     private HistoryItemsAdapter historyItemsAdapter;
 
+    private LocationDatabaseHelper databaseHelper;
+
     private int dayId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +41,9 @@ public class HistoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         this.setupToolbar();
-        this.setupRecycleView();
-
         this.getDay();
+        this.getRunData();
+        this.setupRecycleView();
         this.findViews();
     }
 
@@ -49,12 +52,53 @@ public class HistoryActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
     }
 
-    private void setupRecycleView() {
+    private void getRunData(){
         pastRunItems = new ArrayList<>();
-        pastRunItems.add(new PastRunItem(0,0, "Mon, 05/08/16", 4.59, 110.9, 100000) );
-        pastRunItems.add(new PastRunItem(0,0, "Mon, 05/08/16", 4.59, 110.9, 100000) );
-        pastRunItems.add(new PastRunItem(0,0, "Mon, 05/08/16", 4.59, 110.9, 100000) );
-        pastRunItems.add(new PastRunItem(0,0, "Mon, 05/08/16", 4.59, 110.9, 100000) );
+        String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
+                + DBTableConstants.RUNS_TABLE + " ON " +
+                DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
+                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
+
+                " INNER JOIN "
+                + DBTableConstants.DATES_TABLE + " ON " +
+                DBTableConstants.DATES_TABLE + "." +DBTableConstants.DATE_ID +" = " +
+                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID; //+
+
+
+//                " WHERE " + DBTableConstants.RUNS_TABLE +"." +DBTableConstants.DATE_ID + " = " +
+//                dayId;
+
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        /* Run the query */
+        Cursor c = db.rawQuery(sql, null);
+        c.moveToFirst();
+
+        int prevNum = 1;
+
+        String date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
+        PastRunItem pastRunItem = new PastRunItem(prevNum, dayId, date);
+        pastRunItems.add(pastRunItem);
+        while(!c.isAfterLast()){
+            int runNum = c.getInt(c.getColumnIndex(DBTableConstants.RUN_NUMBER));
+            if(runNum != prevNum){
+                prevNum = runNum;
+                date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
+                pastRunItem = new PastRunItem(runNum, dayId, date);
+                pastRunItems.add(pastRunItem);
+            }
+
+            double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
+            double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
+            double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
+            double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
+            pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
+            Log.i(TAG, "Lat: "+ lat +" LONG: "+lon + " RUN: " + runNum);
+            c.moveToNext();
+        }
+    }
+
+    private void setupRecycleView() {
         historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvHistoryOfRuns);
@@ -80,13 +124,13 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void getDay(){
-        LocationDatabaseHelper databaseHelper = new LocationDatabaseHelper(this);
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format), Locale.US);
         Date date = new Date();
         String currentDate = dateFormat.format(date);
 
+        databaseHelper = new LocationDatabaseHelper(this);
                 /* First check if the db row has already been created */
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
         String[] projection = {DBTableConstants.DATE_ID};
 
         /* Query the exercise table based on the muscle id to get all the associated exercises */
