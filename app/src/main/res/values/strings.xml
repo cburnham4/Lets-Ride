@@ -34,4 +34,5 @@
 
     <!-- Formatting -->
     <string name="date_format">dd-MM-yyyy</string>
+    <string name="title_activity_maps">Map</string>
 </resources>
