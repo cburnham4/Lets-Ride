@@ -16,6 +16,7 @@ import java.util.Locale;
 
 import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.PastRunItem;
+import letshangllc.letsride.objects.StopWatch;
 
 /**
  * Created by cvburnha on 11/3/2015.
@@ -54,8 +55,11 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         // - replace the contents of the view with that itemsData
         final PastRunItem item = items.get(position);
 
+        int[] times = StopWatch.milliToHourMinSecs(item.timeInMilli);
+
         viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.getDistance()*1000));
-        viewHolder.tvSecondaryText.setText(item.timeInMilli +"");
+        viewHolder.tvSecondaryText.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
+                times[1],times[2]));
         viewHolder.tvDate.setText(item.date);
         viewHolder.tvAvgSpeed.setText(item.maxSpeed+"");
 

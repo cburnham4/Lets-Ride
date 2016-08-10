@@ -63,4 +63,22 @@ public class StopWatch {
 
         return times;
     }
+
+    public static  int[] milliToHourMinSecs(double milliseconds){
+        int[] times = new int[3];
+
+        int hours = (int) milliseconds / (60 * 60 * 1000);
+        milliseconds -= hours * (60 * 60 * 1000);
+        int minutes = (int) milliseconds / (60 * 1000);
+        milliseconds -= minutes * (60 * 1000);
+        int seconds = (int) milliseconds / 1000;
+
+        times[0] = hours;
+        times[1] = minutes;
+        times[2] = seconds;
+
+        return times;
+    }
+
+
 }

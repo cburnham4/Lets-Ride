@@ -75,7 +75,11 @@ public class HistoryActivity extends AppCompatActivity {
         c.moveToFirst();
 
         int prevNum = 1;
-
+        if(c.getCount() == 0){
+            c.close();
+            db.close();
+            return;
+        }
         String date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
         PastRunItem pastRunItem = new PastRunItem(prevNum, dayId, date);
         pastRunItems.add(pastRunItem);
@@ -96,6 +100,8 @@ public class HistoryActivity extends AppCompatActivity {
             Log.i(TAG, "Lat: "+ lat +" LONG: "+lon + " RUN: " + runNum);
             c.moveToNext();
         }
+        c.close();
+        db.close();
     }
 
     private void setupRecycleView() {
