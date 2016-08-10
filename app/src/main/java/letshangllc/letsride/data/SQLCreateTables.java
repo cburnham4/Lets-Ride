@@ -20,6 +20,7 @@ public class SQLCreateTables {
             "CREATE TABLE " + DBTableConstants.RUNS_TABLE + " ( " +
                     DBTableConstants.RUN_ID + " integer primary key AUTOINCREMENT, " +
                     DBTableConstants.RUN_NUMBER + " real, " +
+                    DBTableConstants.RUN_DURATION + " real, " +
                     DBTableConstants.DATE_ID + " integer " +
                     "FOREIGN KEY(" + DBTableConstants.DATE_ID  + ") " +
                     "REFERENCES " + DBTableConstants.DATES_TABLE + "(" + DBTableConstants.DATE_ID + ")" +
@@ -28,7 +29,7 @@ public class SQLCreateTables {
     public static final String CREATE_DATES_TABLE =
             "CREATE TABLE " + DBTableConstants.DATES_TABLE + " ( " +
                     DBTableConstants.DATE_ID + " integer primary key AUTOINCREMENT, " +
-                    DBTableConstants.DATE_STRING + " text, " +
-                    DBTableConstants.RUN_DURATION + " real" +
+                    DBTableConstants.DATE_STRING + " text " +
+
                     " )";
 }
