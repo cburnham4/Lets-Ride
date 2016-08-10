@@ -18,9 +18,11 @@ public class LocationDatabaseHelper  extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         //if(checkDataBase()){
-        db.execSQL(SQLCreateTables.CREATE_LOCATIONS_TABLE);
         db.execSQL(SQLCreateTables.CREATE_DATES_TABLE);
         db.execSQL(SQLCreateTables.CREATE_RUNS_TABLE);
+        db.execSQL(SQLCreateTables.CREATE_LOCATIONS_TABLE);
+
+
 
         //
     }

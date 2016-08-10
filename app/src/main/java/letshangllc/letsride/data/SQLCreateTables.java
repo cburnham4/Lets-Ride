@@ -11,7 +11,7 @@ public class SQLCreateTables {
                     DBTableConstants.LOCATION_LONG + " real, " +
                     DBTableConstants.LOCATION_SPEED + " real, " +
                     DBTableConstants.LOCATION_ELEVATION +" real, "+
-                    DBTableConstants.RUN_ID + " integer " +
+                    DBTableConstants.RUN_ID + " integer, " +
                     "FOREIGN KEY(" + DBTableConstants.RUN_ID  + ") " +
                     "REFERENCES " + DBTableConstants.RUNS_TABLE + "(" + DBTableConstants.RUN_ID + ")" +
                     " )";
@@ -21,7 +21,7 @@ public class SQLCreateTables {
                     DBTableConstants.RUN_ID + " integer primary key AUTOINCREMENT, " +
                     DBTableConstants.RUN_NUMBER + " real, " +
                     DBTableConstants.RUN_DURATION + " real, " +
-                    DBTableConstants.DATE_ID + " integer " +
+                    DBTableConstants.DATE_ID + " integer, " +
                     "FOREIGN KEY(" + DBTableConstants.DATE_ID  + ") " +
                     "REFERENCES " + DBTableConstants.DATES_TABLE + "(" + DBTableConstants.DATE_ID + ")" +
                     " )";

@@ -91,7 +91,7 @@ public class HistoryActivity extends AppCompatActivity {
 
         /* Query the exercise table based on the muscle id to get all the associated exercises */
         Cursor c = db.query(DBTableConstants.DATES_TABLE, projection, DBTableConstants.DATE_STRING
-                + " = '" + currentDate, null, null, null, null);
+                + " = '" + currentDate +"'", null, null, null, null);
 
         c.moveToFirst();
         /* If there already exists a dayId for today then return it */
@@ -99,16 +99,18 @@ public class HistoryActivity extends AppCompatActivity {
             Log.e(TAG, "Day exists");
             dayId = c.getInt(0);
             c.close();
+        }else{
+            /* If there is no day id for the current day then insert it */
+            Log.e(TAG, "Day does not exist");
+
+            /* Else insert in a new day */
+            ContentValues values = new ContentValues();
+            values.put(DBTableConstants.DATE_STRING, currentDate);
+
+            /* Insert values into db */
+            dayId = (int) db.insert(DBTableConstants.DATES_TABLE, null, values);
+            db.close();
         }
 
-        Log.e(TAG, "Day does not exist");
-
-         /* Else insert in a new day */
-        ContentValues values = new ContentValues();
-        values.put(DBTableConstants.DATE_STRING, currentDate);
-
-         /* Insert values into db */
-        dayId = (int) db.insert(DBTableConstants.DATES_TABLE, null, values);
-        db.close();
     }
 }

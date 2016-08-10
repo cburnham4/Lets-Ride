@@ -1,9 +1,12 @@
 package letshangllc.letsride.activities;
 
 import android.Manifest;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,13 +23,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import letshangllc.letsride.AdsHelper;
 import letshangllc.letsride.R;
+import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
+import letshangllc.letsride.data.inserts.StoreLocationInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.objects.StopWatch;
@@ -74,7 +81,10 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private FloatingActionButton fabStartPauseRecording, fabStopRecording;
 
     /* Data */
-    private LocationDatabaseHelper locationDatabaseHelper;
+    private LocationDatabaseHelper databaseHelper;
+    private int dayId;
+    private int runId;
+    private int runNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,22 +92,54 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         setContentView(R.layout.activity_record_run);
 
 
-        this.getUserSettings();
+        this.getUserData();
+        this.getRunData();
         this.findViews();
         this.setupViews();
         this.requestPermission();
         this.requestLocationEnabled();
-
         this.runAds();
     }
 
-    private void getUserSettings(){
+    private void getUserData(){
+        dayId = getIntent().getExtras().getInt(getString(R.string.day_id_extra), 0);
         SharedPreferences settings = getSharedPreferences(getString(R.string.user_preferences), 0);
         int speedUnitIndex = settings.getInt(getString(R.string.user_pref_speed_unit_index), 0 );
         int elevationUnitIndex = settings.getInt(getString(R.string.user_pref_elevation_index),0 );
 
         speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
         elevationUnits = ElevationUnits.getElevationUnits(elevationUnitIndex);
+
+        databaseHelper = new LocationDatabaseHelper(this);
+    }
+
+    private void getRunData(){
+        /* First check if the db row has already been created */
+        SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+        /* Get the max run num for that day */
+        String sql = "SELECT MAX("+DBTableConstants.RUN_NUMBER+")FROM " + DBTableConstants.RUNS_TABLE +
+                " WHERE " +DBTableConstants.DATE_ID +
+                " = " + dayId;
+
+        runNum = 1;
+        Cursor c = db.rawQuery(sql, null);
+        c.moveToFirst();
+
+        /* if the cursor contains an int then add one to it for the new runNum */
+        if(c.getCount() == 1){
+            runNum = c.getInt(0) + 1;
+        }
+
+         /* Insert a new run with the new run */
+        ContentValues values = new ContentValues();
+        values.put(DBTableConstants.DATE_ID, dayId);
+        values.put(DBTableConstants.RUN_NUMBER, runNum);
+        values.put(DBTableConstants.RUN_DURATION, 0.0);
+
+         /* Insert values into db */
+        runId = (int) db.insert(DBTableConstants.RUNS_TABLE, null, values);
+        db.close();
     }
 
     /* Make sure the user has location permissions enabled */
@@ -257,6 +299,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
+            new StoreLocationInBackground(location,dayId, runId, databaseHelper).execute();
+
             double currentSpeed = location.getSpeed();
             double currentElevation = location.getAltitude();
 
@@ -356,7 +400,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SETTING_REQUEST){
-            getUserSettings();
+            getUserData();
             updateViewForUnits();
         }
     }
