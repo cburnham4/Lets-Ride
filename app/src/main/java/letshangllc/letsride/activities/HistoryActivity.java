@@ -1,10 +1,13 @@
 package letshangllc.letsride.activities;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import java.util.ArrayList;
 
@@ -12,8 +15,8 @@ import letshangllc.letsride.R;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.data_objects.PastRunItem;
 
-public class MainActivity extends AppCompatActivity {
-    private final static String TAG = MainActivity.class.getSimpleName();
+public class HistoryActivity extends AppCompatActivity {
+    private final static String TAG = HistoryActivity.class.getSimpleName();
 
     /* Recycleview items */
     private ArrayList<PastRunItem> pastRunItems;
@@ -23,7 +26,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        this.setupToolbar();
         this.setupRecycleView();
+        this.findViews();
+    }
+
+    private void setupToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
     }
 
     private void setupRecycleView() {
@@ -41,5 +51,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         recyclerView.setAdapter(historyItemsAdapter);
+    }
+
+    private void findViews(){
+        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fabGoToRecord);
+
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HistoryActivity.this, RecordRunActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 }
