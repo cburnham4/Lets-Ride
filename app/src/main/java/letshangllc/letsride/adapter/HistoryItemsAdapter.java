@@ -1,6 +1,7 @@
 package letshangllc.letsride.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +27,8 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
 
     private Context context;
 
+    /* Listen for item clicks */
+    private static RecyclerViewClickListener mListener;
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
@@ -72,7 +75,7 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
     }
 
     // inner class to hold a reference to each item of RecyclerView
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public TextView tvMainText;
         public TextView tvSecondaryText;
         public TextView tvDate;
@@ -84,6 +87,13 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
             tvSecondaryText = (TextView) view.findViewById(R.id.tvSecondaryText);
             tvDate = (TextView) view.findViewById(R.id.tvRunDate);
             tvAvgSpeed = (TextView) view.findViewById(R.id.tvAvgSpeed);
+
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            mListener.recyclerViewListClicked(view, getLayoutPosition());
         }
     }
 

@@ -1,10 +1,12 @@
 package letshangllc.letsride.activities;
 
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,12 +23,13 @@ import java.util.Locale;
 
 import letshangllc.letsride.R;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
+import letshangllc.letsride.adapter.RecyclerViewClickListener;
 import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
 
-public class HistoryActivity extends AppCompatActivity {
+public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
     /* Recycleview items */
@@ -162,5 +166,15 @@ public class HistoryActivity extends AppCompatActivity {
             db.close();
         }
 
+    }
+
+
+    /* Run when a machine has been clicked */
+    @Override
+    public void recyclerViewListClicked(View v, final int position) {
+        final PastRunItem pastRunItem = pastRunItems.get(position);
+
+        Intent intent = new Intent(HistoryActivity.this, MapsActivity.class);
+        startActivity(intent);
     }
 }
