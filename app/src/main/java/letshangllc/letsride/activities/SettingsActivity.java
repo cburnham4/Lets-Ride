@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import letshangllc.letsride.AdsHelper;
+import letshangllc.letsride.objects.AdsHelper;
 import letshangllc.letsride.R;
 
 public class SettingsActivity extends AppCompatActivity {

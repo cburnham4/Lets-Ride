@@ -175,6 +175,8 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         final PastRunItem pastRunItem = pastRunItems.get(position);
 
         Intent intent = new Intent(HistoryActivity.this, MapsActivity.class);
+        intent.putExtra(getString(R.string.past_run_item_extra), pastRunItem);
+        intent.putExtra(getString(R.string.past_run_locations_extra), pastRunItem.pastLocations);
         startActivity(intent);
     }
 }

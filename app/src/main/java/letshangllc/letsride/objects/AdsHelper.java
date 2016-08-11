@@ -1,4 +1,4 @@
-package letshangllc.letsride;
+package letshangllc.letsride.objects;
 
 import android.app.Activity;
 import android.os.Handler;
@@ -11,6 +11,8 @@ import com.amazon.device.ads.AdError;
 import com.amazon.device.ads.AdListener;
 import com.amazon.device.ads.AdProperties;
 import com.amazon.device.ads.AdRegistration;
+
+import letshangllc.letsride.R;
 
 
 /**

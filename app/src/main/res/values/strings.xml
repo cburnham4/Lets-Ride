@@ -26,6 +26,8 @@
 
     <!-- Extras -->
     <string name="day_id_extra">day_id_extra</string>
+    <string name="past_run_item_extra">past_run_item_extra</string>
+    <string name="past_run_locations_extra">past_run_location_extras</string>
 
     <!-- User Preferences -->
     <string name="user_preferences">USER_PREFERENCES</string>
