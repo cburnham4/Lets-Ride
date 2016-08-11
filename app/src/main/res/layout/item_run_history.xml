@@ -50,6 +50,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/tvAvgSpeed"
             android:textSize="@dimen/rv_secondary_text_sz"
+            android:visibility="invisible"
             android:padding="@dimen/rv_text_padding"/>
         <TextView
             android:layout_width="wrap_content"

@@ -59,8 +59,8 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.getDistance()*1000));
         viewHolder.tvSecondaryText.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
                 times[1],times[2]));
-        viewHolder.tvDate.setText(item.date);
-        viewHolder.tvAvgSpeed.setText(item.maxSpeed+"");
+        viewHolder.tvDate.setText(item.getDate());
+        //viewHolder.tvAvgSpeed.setText(item.maxSpeed+"");
 
     }
 

@@ -3,7 +3,11 @@ package letshangllc.letsride.data_objects;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Carl on 8/9/2016.
@@ -57,6 +61,18 @@ public class PastRunItem implements Parcelable{
             km+= PastLocation.distance(prevLocation.lat, prevLocation.lon, pastLocation.lat, pastLocation.lon);
         }
         return km;
+    }
+
+    public String getDate(){
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        try{
+            Date date= df.parse(this.date);
+            DateFormat df2 = new SimpleDateFormat("EEE, MMM dd, yyyy");
+            return df2.format(date);
+        }catch (ParseException e){
+            e.printStackTrace();
+        }
+        return date;
     }
 
 
