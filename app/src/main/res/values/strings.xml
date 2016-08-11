@@ -46,6 +46,17 @@
         <item>3</item>
     </string-array>
 
+    <string-array name="speed_units">
+        <item>mph</item>
+        <item>m/s</item>
+        <item>km/h</item>
+    </string-array>
+    <string-array name="speed_indexes">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
     <!-- Formatting -->
     <string name="date_format">dd-MM-yyyy</string>
     <string name="title_activity_maps">Map</string>

@@ -3,10 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient_bg"
     android:orientation="vertical"
     tools:context=".activities.SettingsActivityOld">
 
+    <include layout="@layout/toolbar"/>
+    <fragment
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/ad_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/settingPreferences"
+        android:name="letshangllc.letsride.activities.SettingsFragment"/>
+
+    <!--
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -18,7 +27,7 @@
             android:orientation="vertical">
 
 
-            <!-- Speed Settings -->
+             Speed Settings
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -81,14 +90,14 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <!--- DIVIDING LINE -->
+            DIVIDING LINE
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:background="@color/accent"
                 />
 
-            <!-- Elevation Settings -->
+             Elevation Settings
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -176,7 +185,7 @@
                 android:background="@drawable/btn_settings_selector"/>
         </LinearLayout>
 
-    </ScrollView>
+    </ScrollView> -->
 
 
 
