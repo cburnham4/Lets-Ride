@@ -51,7 +51,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 0.5;
 
     // The minimum time beetwen updates in milliseconds
-    private static final long MIN_TIME_BW_UPDATES = 2000;
+    private long MIN_TIME_BW_UPDATES = 3000;
 
     /* Recording Variables
     *  UNITS ARE STORES AS METERS AND METERS PER SECOND*/
@@ -105,6 +105,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
         int elevationUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_elevation_index), "0"));
+        MIN_TIME_BW_UPDATES = (long) settings.getLong(getString(R.string.user_pref_min_time_loc_request), 0);
 
         Log.i(TAG, "Speed Index " + speedUnitIndex);
         Log.i(TAG, "elevationL " + elevationUnitIndex);

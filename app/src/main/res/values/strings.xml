@@ -33,6 +33,7 @@
     <string name="user_preferences">USER_PREFERENCES</string>
     <string name="user_pref_speed_unit_index">SPEED_INDEX_UNIT</string>
     <string name="user_pref_elevation_index">ELEVATION_INDEX_UNIT</string>
+    <string name="user_pref_min_time_loc_request">MIN_TIME_LOCATION_REQUEST</string>
     <string-array name="elevation_units">
         <item>ft</item>
         <item>mi</item>
