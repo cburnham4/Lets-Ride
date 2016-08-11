@@ -42,9 +42,6 @@ import letshangllc.letsride.enums.SpeedUnits;
 public class RecordRunActivity extends AppCompatActivity implements LocationListener {
     private final static String TAG = RecordRunActivity.class.getSimpleName();
 
-    /* SEtting intent request */
-    private final static int SETTING_REQUEST = 10;
-
     /* Permission Variables */
     private final static int REQUEST_LOCATION_PERMISSIONS = 0;
     private boolean locationPermissionsEnabled;
@@ -89,6 +86,9 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_run);
 
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
+
+        adsHelper.setUpAds();
 
         this.getUserData();
         this.getRunData();
@@ -385,22 +385,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             }
         });
 
-        imgSettings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent =  new Intent(RecordRunActivity.this, SettingsActivity.class);
-                startActivityForResult(intent, SETTING_REQUEST);
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SETTING_REQUEST){
-            getUserData();
-            updateViewForUnits();
-        }
     }
 
     /* Update the non current values for their new units */
@@ -426,7 +410,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                         times[1],times[2]));
 
                 /* Run updateTimte again in 100ms */
-                handler.postDelayed(this, 300);
+                adsHelper.refreshAd();
+                handler.postDelayed(this, 1000);
             }
         }};
 
@@ -448,16 +433,16 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
     private AdsHelper adsHelper;
     public void runAds(){
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
-
-        adsHelper.setUpAds();
-        int delay = 1000; // delay for 1 sec.
-        int period = getResources().getInteger(R.integer.ad_refresh_rate);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                adsHelper.refreshAd();  // display the data
-            }
-        }, delay, period);
+//        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
+//
+//        adsHelper.setUpAds();
+//        int delay = 1000; // delay for 1 sec.
+//        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+//        Timer timer = new Timer();
+//        timer.scheduleAtFixedRate(new TimerTask() {
+//            public void run() {
+//                adsHelper.refreshAd();  // display the data
+//            }
+//        }, delay, period);
     }
 }

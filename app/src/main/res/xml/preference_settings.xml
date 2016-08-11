@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:dependency="pref_sync"
+        android:key="@string/user_pref_elevation_index"
+        android:title="@string/elevation_units"
+        android:dialogTitle="@string/elevation_units"
+        android:entries="@array/elevation_units"
+        android:entryValues="@array/elevation_indexes"
+        android:defaultValue="ft" />
+
+    <ListPreference
+        android:dependency="pref_sync"
+        android:key="@string/user_pref_speed_unit_index"
+        android:title="@string/elevation_units"
+        android:dialogTitle="@string/elevation_units"
+        android:entries="@array/elevation_units"
+        android:entryValues="@array/elevation_units"
+        android:defaultValue="ft" />
+</PreferenceScreen>

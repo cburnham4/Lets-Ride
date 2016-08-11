@@ -1,20 +1,20 @@
 package letshangllc.letsride.activities;
 
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,12 +32,17 @@ import letshangllc.letsride.data_objects.PastRunItem;
 public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
+    /* SEtting intent request */
+    private final static int SETTING_REQUEST = 10;
+
     /* Recycleview items */
     private ArrayList<PastRunItem> pastRunItems;
     private HistoryItemsAdapter historyItemsAdapter;
 
+    /* Database helper */
     private LocationDatabaseHelper databaseHelper;
 
+    /* Day Id */
     private int dayId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,7 +181,35 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
         Intent intent = new Intent(HistoryActivity.this, MapsActivity.class);
         intent.putExtra(getString(R.string.past_run_item_extra), pastRunItem);
-        intent.putExtra(getString(R.string.past_run_locations_extra), pastRunItem.pastLocations);
+
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_history_toolbar, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                Intent intent =  new Intent(HistoryActivity.this, SettingsActivityOld.class);
+                startActivityForResult(intent, SETTING_REQUEST);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == SETTING_REQUEST){
+            /* TODO: Change amounts when returned */
+        }
     }
 }

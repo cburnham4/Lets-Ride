@@ -23,7 +23,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final String TAG = MapsActivity.class.getSimpleName();
     private GoogleMap mMap;
     private PastRunItem pastRunItem;
-    private ArrayList<PastLocation> pastLocations;
+    //private ArrayList<PastLocation> pastLocations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +42,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         pastRunItem = (PastRunItem) getIntent().getParcelableExtra(getString(R.string.past_run_item_extra));
-        pastLocations = getIntent().getParcelableArrayListExtra(getString(R.string.past_run_locations_extra));
+
+        if(pastRunItem.pastLocations.size()!=0){
+            PastLocation pastLocation = pastRunItem.pastLocations.get(0);
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(pastLocation.lat, pastLocation.lon)));
+            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+        }
+
         // Add a marker in Sydney and move the camera
         //LatLng sydney = new LatLng(-34, 151);\\
         //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -54,8 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Instantiates a new Polyline object and adds points to define a rectangle
         PolylineOptions rectOptions = new PolylineOptions();
 
-        Log.i(TAG, "LOCATIONS: " + pastLocations.size());
-        for(PastLocation pastLocation: pastLocations){
+        Log.i(TAG, "LOCATIONS: " + pastRunItem.pastLocations.size());
+        for(PastLocation pastLocation: pastRunItem.pastLocations){
             rectOptions.add(new LatLng(pastLocation.lat, pastLocation.lon));
         }
 

@@ -13,7 +13,7 @@ import java.util.TimerTask;
 import letshangllc.letsride.objects.AdsHelper;
 import letshangllc.letsride.R;
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivityOld extends AppCompatActivity {
 
     /* Views */
     private TextView tvMPHSelection, tvMPSSelection, tvKMHSelection,
@@ -74,7 +74,7 @@ public class SettingsActivity extends AppCompatActivity {
                 editor.putInt(getString(R.string.user_pref_elevation_index), elevationUnitIndex);
 
                 editor.commit();
-                SettingsActivity.this.finish();
+                SettingsActivityOld.this.finish();
             }
         });
     }
