@@ -21,6 +21,7 @@
 
     <!-- Setting Activity -->
     <string name="speed_units">Speed Units</string>
+    <string name="distance_units">Distance Units</string>
     <string name="elevation_units">Elevation Units</string>
     <string name="save">Confirm Changes</string>
 
@@ -33,14 +34,16 @@
     <string name="user_preferences">USER_PREFERENCES</string>
     <string name="user_pref_speed_unit_index">SPEED_INDEX_UNIT</string>
     <string name="user_pref_elevation_index">ELEVATION_INDEX_UNIT</string>
+    <string name="user_pref_distance_index">DISTANCE_INDEX_UNIT</string>
     <string name="user_pref_min_time_loc_request">MIN_TIME_LOCATION_REQUEST</string>
-    <string-array name="elevation_units">
+
+    <string-array name="length_units">
         <item>ft</item>
         <item>mi</item>
         <item>m</item>
         <item>km</item>
     </string-array>
-    <string-array name="elevation_indexes">
+    <string-array name="length_indexes">
         <item>0</item>
         <item>1</item>
         <item>2</item>

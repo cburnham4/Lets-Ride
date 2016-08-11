@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:sample="http://schemas.android.com/apk/res-auto">
 
-
+    <!-- Speed -->
     <ListPreference
         android:key="@string/user_pref_speed_unit_index"
         android:title="@string/speed_units"
@@ -12,12 +12,23 @@
         android:defaultValue="mph"
         android:summary="Select your preferred speed units"/>
 
+    <!-- Distance -->
+    <ListPreference
+        android:key="@string/user_pref_distance_index"
+        android:title="@string/distance_units"
+        android:dialogTitle="@string/distance_units"
+        android:entries="@array/length_units"
+        android:entryValues="@array/length_indexes"
+        android:defaultValue="ft"
+        android:summary="Select your preferred distance units"/>
+
+    <!-- Elevation -->
     <ListPreference
         android:key="@string/user_pref_elevation_index"
         android:title="@string/elevation_units"
         android:dialogTitle="@string/elevation_units"
-        android:entries="@array/elevation_units"
-        android:entryValues="@array/elevation_indexes"
+        android:entries="@array/length_units"
+        android:entryValues="@array/length_indexes"
         android:defaultValue="ft"
         android:summary="Select your preferred elevation units"/>
 
