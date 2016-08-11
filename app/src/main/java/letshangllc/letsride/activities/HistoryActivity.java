@@ -90,14 +90,16 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             return;
         }
         String date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
-        PastRunItem pastRunItem = new PastRunItem(prevNum, dayId, date);
+        double duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
+        PastRunItem pastRunItem = new PastRunItem(prevNum, dayId, date, duration);
         pastRunItems.add(pastRunItem);
         while(!c.isAfterLast()){
             int runNum = c.getInt(c.getColumnIndex(DBTableConstants.RUN_NUMBER));
             if(runNum != prevNum){
                 prevNum = runNum;
                 date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
-                pastRunItem = new PastRunItem(runNum, dayId, date);
+                duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
+                pastRunItem = new PastRunItem(runNum, dayId, date, duration);
                 pastRunItems.add(pastRunItem);
             }
 

@@ -1,16 +1,11 @@
 package letshangllc.letsride.adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -59,7 +54,7 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         // - replace the contents of the view with that itemsData
         final PastRunItem item = items.get(position);
 
-        int[] times = StopWatch.milliToHourMinSecs(item.timeInMilli);
+        int[] times = StopWatch.milliToHourMinSecs(item.durationInMilli);
 
         viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.getDistance()*1000));
         viewHolder.tvSecondaryText.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],

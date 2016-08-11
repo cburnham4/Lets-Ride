@@ -1,11 +1,9 @@
 package letshangllc.letsride.data_objects;
 
-import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 /**
  * Created by Carl on 8/9/2016.
@@ -15,13 +13,14 @@ public class PastRunItem implements Parcelable{
     public int dayId;
     public String date;
     public double maxSpeed = 123.123;
-    public double timeInMilli = 111.22;
+    public double durationInMilli;
     public ArrayList<PastLocation> pastLocations  = new ArrayList<>();
 
-    public PastRunItem(int runId, int dayId, String date) {
+    public PastRunItem(int runId, int dayId, String date, double durationInMilli) {
         this.runId = runId;
         this.dayId = dayId;
         this.date = date;
+        this.durationInMilli = durationInMilli;
     }
 
     protected PastRunItem(Parcel in) {
@@ -29,7 +28,7 @@ public class PastRunItem implements Parcelable{
         dayId = in.readInt();
         date = in.readString();
         maxSpeed = in.readDouble();
-        timeInMilli = in.readDouble();
+        durationInMilli = in.readDouble();
         //pastLocations = in.createTypedArrayList(PastLocation.CREATOR);
         in.readTypedList(pastLocations, PastLocation.CREATOR);
         //PastLocation[] pastLocations1 = (PastLocation[]) in.readParcelableArray(PastLocation.class.getClassLoader());
@@ -71,7 +70,7 @@ public class PastRunItem implements Parcelable{
         parcel.writeInt(runId);
         parcel.writeInt(dayId);
         parcel.writeString(date);
-        parcel.writeDouble(timeInMilli);
+        parcel.writeDouble(durationInMilli);
         parcel.writeDouble(maxSpeed);
         //PastLocation[] pastLocationsArr = pastLocations.toArray(new PastLocation[pastLocations.size()]);
         //parcel.writeArray(pastLocationsArr);
