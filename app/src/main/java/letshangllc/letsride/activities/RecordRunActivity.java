@@ -1,11 +1,9 @@
 package letshangllc.letsride.activities;
 
 import android.Manifest;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
@@ -24,15 +22,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
+import letshangllc.letsride.data.StoringDataComplete;
+import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.objects.AdsHelper;
 import letshangllc.letsride.R;
-import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
-import letshangllc.letsride.data.inserts.StoreLocationInBackground;
+import letshangllc.letsride.data.inserts.StoreRunInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.objects.StopWatch;
@@ -58,6 +56,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private boolean isRecording = false;
     private Speed speed = new Speed();
     private Elevation elevation = new Elevation();
+    private ArrayList<PastLocation> pastLocations = new ArrayList<>();
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -79,8 +78,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     /* Data */
     private LocationDatabaseHelper databaseHelper;
     private int dayId;
-    private int runId;
-    private int runNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,7 +89,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         adsHelper.setUpAds();
 
         this.getUserData();
-        this.getRunData();
         this.findViews();
         this.setupViews();
         this.requestPermission();
@@ -113,35 +109,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         elevationUnits = ElevationUnits.getElevationUnits(elevationUnitIndex);
 
         databaseHelper = new LocationDatabaseHelper(this);
-    }
-
-    private void getRunData(){
-        /* First check if the db row has already been created */
-        SQLiteDatabase db = databaseHelper.getWritableDatabase();
-
-        /* Get the max run num for that day */
-        String sql = "SELECT MAX("+DBTableConstants.RUN_NUMBER+")FROM " + DBTableConstants.RUNS_TABLE +
-                " WHERE " +DBTableConstants.DATE_ID +
-                " = " + dayId;
-
-        runNum = 1;
-        Cursor c = db.rawQuery(sql, null);
-        c.moveToFirst();
-
-        /* if the cursor contains an int then add one to it for the new runNum */
-        if(c.getCount() == 1){
-            runNum = c.getInt(0) + 1;
-        }
-
-         /* Insert a new run with the new run */
-        ContentValues values = new ContentValues();
-        values.put(DBTableConstants.DATE_ID, dayId);
-        values.put(DBTableConstants.RUN_NUMBER, runNum);
-        values.put(DBTableConstants.RUN_DURATION, 0.0);
-
-         /* Insert values into db */
-        runId = (int) db.insert(DBTableConstants.RUNS_TABLE, null, values);
-        db.close();
     }
 
     /* Make sure the user has location permissions enabled */
@@ -301,8 +268,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
-            new StoreLocationInBackground(location,dayId, runId, databaseHelper).execute();
-
             double currentSpeed = location.getSpeed();
             double currentElevation = location.getAltitude();
 
@@ -336,6 +301,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 }
 
             }
+            pastLocations.add(new PastLocation(location.getLatitude(), location.getLongitude(),
+                    currentSpeed, currentElevation));
         }
     }
 
@@ -361,7 +328,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(elevationUnits.label);
 
-        ImageView imgSettings = (ImageView) findViewById(R.id.imgSettings);
+        ImageView imgSave = (ImageView) findViewById(R.id.imgSave);
+        ImageView imgCancel = (ImageView) findViewById(R.id.imgCancel);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -386,6 +354,28 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 /* TODO: Store Data */
                 fabStopRecording.setVisibility(View.GONE);
                 stopRecording();
+            }
+        });
+
+        imgCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /* TODO Add dialog and have set to true in prefs */
+                finish();
+            }
+        });
+
+        imgSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new StoreRunInBackground(pastLocations, dayId, databaseHelper, RecordRunActivity.this,
+                    new StoringDataComplete() {
+                        @Override
+                        public void onDataStored() {
+                        Log.i(TAG, "Data Stored");
+                        finish();
+                    }
+                }).execute();
             }
         });
 

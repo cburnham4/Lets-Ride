@@ -52,7 +52,7 @@
                         android:src="@drawable/ic_save_white_36dp"
                         android:clickable="true"
                         android:paddingRight="@dimen/unit_padding"
-                        android:id="@+id/imgSettings"
+                        android:id="@+id/imgSave"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true" />

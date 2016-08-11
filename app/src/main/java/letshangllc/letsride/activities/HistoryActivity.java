@@ -47,7 +47,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_history);
 
         this.setupToolbar();
         this.getDay();

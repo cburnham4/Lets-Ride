@@ -8,6 +8,7 @@
         android:layout_margin="@dimen/rv_item_padding_horizontal"
         android:src="@drawable/distance"
         android:id="@+id/imgIcon"
+        android:layout_centerInParent="true"
         />
 
     <LinearLayout
