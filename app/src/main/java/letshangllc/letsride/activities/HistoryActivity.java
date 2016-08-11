@@ -109,7 +109,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     }
 
     private void setupRecycleView() {
-        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this);
+        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvHistoryOfRuns);
 

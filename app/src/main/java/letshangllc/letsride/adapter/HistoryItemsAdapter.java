@@ -32,9 +32,10 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
 
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HistoryItemsAdapter(ArrayList<PastRunItem> items, Context context) {
+    public HistoryItemsAdapter(ArrayList<PastRunItem> items, Context context, RecyclerViewClickListener listener) {
         this.items = items;
         this.context = context;
+        this.mListener = listener;
     }
 
     // Create new views (invoked by the layout manager)
