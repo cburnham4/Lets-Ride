@@ -197,7 +197,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Intent intent =  new Intent(HistoryActivity.this, SettingsActivityOld.class);
+                Intent intent =  new Intent(HistoryActivity.this, SettingsActivity.class);
                 startActivityForResult(intent, SETTING_REQUEST);
                 return true;
             default:

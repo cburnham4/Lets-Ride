@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sample="http://schemas.android.com/apk/res-auto">
 
-    <ListPreference
-        android:key="@string/user_pref_elevation_index"
-        android:title="@string/elevation_units"
-        android:dialogTitle="@string/elevation_units"
-        android:entries="@array/elevation_units"
-        android:entryValues="@array/elevation_indexes"
-        android:defaultValue="ft" />
 
     <ListPreference
         android:key="@string/user_pref_speed_unit_index"
@@ -15,5 +9,27 @@
         android:dialogTitle="@string/speed_units"
         android:entries="@array/speed_units"
         android:entryValues="@array/speed_indexes"
-        android:defaultValue="mph" />
+        android:defaultValue="mph"
+        android:summary="Select your preferred speed units"/>
+
+    <ListPreference
+        android:key="@string/user_pref_elevation_index"
+        android:title="@string/elevation_units"
+        android:dialogTitle="@string/elevation_units"
+        android:entries="@array/elevation_units"
+        android:entryValues="@array/elevation_indexes"
+        android:defaultValue="ft"
+        android:summary="Select your preferred elevation units"/>
+
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:key="your_pref_key"
+        android:title="Location Request Interval"
+        android:summary="Increasing value will decrease battery and data usage but will decrease the application's accuracy."
+        android:defaultValue="3"
+        sample:msbp_minValue="1"
+        sample:msbp_maxValue="60"
+        sample:msbp_interval="1"
+        sample:msbp_measurementUnit="sec"
+        sample:msbp_dialogEnabled="false"/>
+
 </PreferenceScreen>

@@ -11,6 +11,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -101,10 +102,12 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
     private void getUserData(){
         dayId = getIntent().getExtras().getInt(getString(R.string.day_id_extra), 0);
-        SharedPreferences settings = getSharedPreferences(getString(R.string.user_preferences), 0);
-        int speedUnitIndex = settings.getInt(getString(R.string.user_pref_speed_unit_index), 0 );
-        int elevationUnitIndex = settings.getInt(getString(R.string.user_pref_elevation_index),0 );
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
+        int elevationUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_elevation_index), "0"));
 
+        Log.i(TAG, "Speed Index " + speedUnitIndex);
+        Log.i(TAG, "elevationL " + elevationUnitIndex);
         speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
         elevationUnits = ElevationUnits.getElevationUnits(elevationUnitIndex);
 
