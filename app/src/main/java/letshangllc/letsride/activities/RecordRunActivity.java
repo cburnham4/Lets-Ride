@@ -328,7 +328,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(elevationUnits.label);
 
-        ImageView imgSave = (ImageView) findViewById(R.id.imgSave);
         ImageView imgCancel = (ImageView) findViewById(R.id.imgCancel);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
@@ -354,6 +353,15 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 /* TODO: Store Data */
                 fabStopRecording.setVisibility(View.GONE);
                 stopRecording();
+                new StoreRunInBackground(pastLocations, dayId, stopWatch.getElapsedTime(),
+                        databaseHelper, RecordRunActivity.this,
+                        new StoringDataComplete() {
+                            @Override
+                            public void onDataStored() {
+                                Log.i(TAG, "Data Stored");
+                                finish();
+                            }
+                        }).execute();
             }
         });
 
@@ -365,22 +373,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 finish();
             }
         });
-
-        imgSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new StoreRunInBackground(pastLocations, dayId, stopWatch.getElapsedTime(),
-                        databaseHelper, RecordRunActivity.this,
-                    new StoringDataComplete() {
-                        @Override
-                        public void onDataStored() {
-                        Log.i(TAG, "Data Stored");
-                        finish();
-                    }
-                }).execute();
-            }
-        });
-
     }
 
     /* Update the non current values for their new units */
