@@ -2,8 +2,10 @@ package letshangllc.letsride.activities;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -28,6 +30,8 @@ import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
+import letshangllc.letsride.enums.LengthUnits;
+import letshangllc.letsride.enums.SpeedUnits;
 
 public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
@@ -64,18 +68,14 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     private void getRunData(){
         pastRunItems = new ArrayList<>();
         String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
-                + DBTableConstants.RUNS_TABLE + " ON " +
-                DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
-                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
+            + DBTableConstants.RUNS_TABLE + " ON " +
+            DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
+            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
 
-                " INNER JOIN "
-                + DBTableConstants.DATES_TABLE + " ON " +
-                DBTableConstants.DATES_TABLE + "." +DBTableConstants.DATE_ID +" = " +
-                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID; //+
-
-
-//                " WHERE " + DBTableConstants.RUNS_TABLE +"." +DBTableConstants.DATE_ID + " = " +
-//                dayId;
+            " INNER JOIN "
+            + DBTableConstants.DATES_TABLE + " ON " +
+            DBTableConstants.DATES_TABLE + "." +DBTableConstants.DATE_ID +" = " +
+            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID;
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -116,7 +116,14 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     }
 
     private void setupRecycleView() {
-        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, this);
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
+        int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
+        int elevationUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_elevation_index), "0"));
+
+        SpeedUnits speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
+        LengthUnits lengthUnits = LengthUnits.getElevationUnits(elevationUnitIndex);
+        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, lengthUnits,
+                speedUnits, this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvHistoryOfRuns);
 

@@ -12,6 +12,8 @@ import java.util.Locale;
 
 import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.PastRunItem;
+import letshangllc.letsride.enums.LengthUnits;
+import letshangllc.letsride.enums.SpeedUnits;
 import letshangllc.letsride.objects.StopWatch;
 
 /**
@@ -25,11 +27,19 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
     /* Listen for item clicks */
     private static RecyclerViewClickListener mListener;
 
+    /* Multiplier */
+    private LengthUnits lengthUnits;
+    private SpeedUnits speedUnits;
+
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public HistoryItemsAdapter(ArrayList<PastRunItem> items, Context context, RecyclerViewClickListener listener) {
+    public HistoryItemsAdapter(ArrayList<PastRunItem> items, Context context, LengthUnits lengthUnits,
+                               SpeedUnits speedUnits,
+                               RecyclerViewClickListener listener) {
         this.items = items;
         this.context = context;
+        this.lengthUnits = lengthUnits;
+        this.speedUnits = speedUnits;
         this.mListener = listener;
     }
 
@@ -56,7 +66,8 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
 
         int[] times = StopWatch.milliToHourMinSecs(item.durationInMilli);
 
-        viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f", item.getDistance()*1000));
+        viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f %s",
+                item.getDistance() * lengthUnits.multiplier, lengthUnits.label));
         viewHolder.tvSecondaryText.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
                 times[1],times[2]));
         viewHolder.tvDate.setText(item.getDate());

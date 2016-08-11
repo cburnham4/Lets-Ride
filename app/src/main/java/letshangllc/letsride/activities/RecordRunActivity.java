@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -34,7 +33,7 @@ import letshangllc.letsride.data.inserts.StoreRunInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.objects.StopWatch;
-import letshangllc.letsride.enums.ElevationUnits;
+import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
 
 
@@ -57,6 +56,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private Speed speed = new Speed();
     private Elevation elevation = new Elevation();
     private ArrayList<PastLocation> pastLocations = new ArrayList<>();
+    private double distanceInMeters = 0;
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -68,7 +68,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
     /* Units */
     private SpeedUnits speedUnits;
-    private ElevationUnits elevationUnits;
+    private LengthUnits lengthUnits;
 
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
@@ -106,7 +106,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         Log.i(TAG, "Speed Index " + speedUnitIndex);
         Log.i(TAG, "elevationL " + elevationUnitIndex);
         speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
-        elevationUnits = ElevationUnits.getElevationUnits(elevationUnitIndex);
+        lengthUnits = LengthUnits.getElevationUnits(elevationUnitIndex);
 
         databaseHelper = new LocationDatabaseHelper(this);
     }
@@ -277,7 +277,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
             /* Convert speed and elevations to perferred units */
             double speedInUnits = currentSpeed * speedUnits.multiplier;
-            double elivationInUnits = currentElevation *elevationUnits.multiplier;
+            double elivationInUnits = currentElevation * lengthUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
@@ -292,12 +292,12 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
                 tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                        elevation.getMaxElevation() *elevationUnits.multiplier));
+                        elevation.getMaxElevation() * lengthUnits.multiplier));
 
                 double minElevation =  elevation.getMinElevation();
                 if(minElevation != 0){
                     tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                            minElevation *elevationUnits.multiplier));
+                            minElevation * lengthUnits.multiplier));
                 }
 
             }
@@ -326,7 +326,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     /* Set views text and listeners */
     private void setupViews(){
         tvSpeedUnits.setText(speedUnits.label);
-        tvElevationUnits.setText(elevationUnits.label);
+        tvElevationUnits.setText(lengthUnits.label);
 
         ImageView imgCancel = (ImageView) findViewById(R.id.imgCancel);
 
@@ -378,12 +378,12 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     /* Update the non current values for their new units */
     private  void updateViewForUnits(){
         tvSpeedUnits.setText(speedUnits.label);
-        tvElevationUnits.setText(elevationUnits.label);
+        tvElevationUnits.setText(lengthUnits.label);
 
         tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers() * speedUnits.multiplier));
         tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
-        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMaxElevation() * elevationUnits.multiplier));
-        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMinElevation() * elevationUnits.multiplier));
+        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMaxElevation() * lengthUnits.multiplier));
+        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMinElevation() * lengthUnits.multiplier));
     }
 
     public Runnable updateTimer = new Runnable() {
