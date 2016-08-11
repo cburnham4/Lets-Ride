@@ -30,11 +30,10 @@ public class StopWatch {
 
 
     // elaspsed time in milliseconds
-    private long getElapsedTime() {
-        if (running) {
-            return System.currentTimeMillis() - startTime +pauseTime;
-        }
-        return stopTime - startTime;
+    public long getElapsedTime() {
+        long currentIntervalTime = System.currentTimeMillis() - startTime;
+        long milliseconds = currentIntervalTime + pauseTime;
+        return milliseconds;
     }
 
 

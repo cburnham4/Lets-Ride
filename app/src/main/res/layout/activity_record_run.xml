@@ -329,7 +329,7 @@
                     android:layout_marginTop="@dimen/fab_margin"
                     android:layout_marginLeft="@dimen/fab_margin"
                     android:layout_marginRight="@dimen/fab_margin"
-                    android:src="@drawable/ic_stop_white_48dp"
+                    android:src="@drawable/ic_save_white_36dp"
                     android:visibility="gone"/>
 
             </LinearLayout>

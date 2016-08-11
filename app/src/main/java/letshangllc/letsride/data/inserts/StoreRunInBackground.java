@@ -22,15 +22,18 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
 
     private ArrayList<PastLocation> pastLocations;
     private int dayId;
+    private double duration;
     private LocationDatabaseHelper locationDatabaseHelper;
 
     private StoringDataComplete callback;
     private ProgressDialog dialog;
     private Context context;
 
-    public StoreRunInBackground(ArrayList<PastLocation> pastLocations, int dayId, LocationDatabaseHelper locationDatabaseHelper, Context context, StoringDataComplete callback) {
+    public StoreRunInBackground(ArrayList<PastLocation> pastLocations, int dayId, double duration,
+                                LocationDatabaseHelper locationDatabaseHelper, Context context, StoringDataComplete callback) {
         this.pastLocations = pastLocations;
         this.dayId = dayId;
+        this.duration = duration;
         this.locationDatabaseHelper = locationDatabaseHelper;
         this.callback = callback;
         this.context = context;
@@ -69,7 +72,7 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
         ContentValues values = new ContentValues();
         values.put(DBTableConstants.DATE_ID, dayId);
         values.put(DBTableConstants.RUN_NUMBER, runNum);
-        values.put(DBTableConstants.RUN_DURATION, 0.0);
+        values.put(DBTableConstants.RUN_DURATION, duration);
 
          /* Insert values into db */
         int runId = (int) db.insert(DBTableConstants.RUNS_TABLE, null, values);

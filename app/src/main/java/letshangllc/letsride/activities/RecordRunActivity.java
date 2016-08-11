@@ -361,6 +361,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(View view) {
                 /* TODO Add dialog and have set to true in prefs */
+                stopRecording();
                 finish();
             }
         });
@@ -368,7 +369,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         imgSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new StoreRunInBackground(pastLocations, dayId, databaseHelper, RecordRunActivity.this,
+                new StoreRunInBackground(pastLocations, dayId, stopWatch.getElapsedTime(),
+                        databaseHelper, RecordRunActivity.this,
                     new StoringDataComplete() {
                         @Override
                         public void onDataStored() {
