@@ -23,11 +23,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
 
-    compile 'com.android.support:design:24.0.0'
 
+
+    compile 'com.android.support:design:24.0.0'
     compile 'com.amazon.android:mobile-ads:5.7.2'
     compile 'com.google.android.gms:play-services-ads:9.2.1'
     compile 'com.google.android.gms:play-services-maps:9.2.1'
-
     compile 'com.pavelsikun:material-seekbar-preference:2.3.0+'
+    compile 'com.android.support:support-v4:24.0.0'
 }

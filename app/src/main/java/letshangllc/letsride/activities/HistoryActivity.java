@@ -24,6 +24,7 @@ import java.util.Date;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
+import letshangllc.letsride.activities.runinfo.MapsActivity;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.adapter.RecyclerViewClickListener;
 import letshangllc.letsride.data.DBTableConstants;

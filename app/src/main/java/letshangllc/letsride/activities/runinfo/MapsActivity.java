@@ -1,19 +1,17 @@
-package letshangllc.letsride.activities;
+package letshangllc.letsride.activities.runinfo;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.ArrayList;
 
 import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.PastLocation;
@@ -43,16 +41,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         pastRunItem = (PastRunItem) getIntent().getParcelableExtra(getString(R.string.past_run_item_extra));
 
-        if(pastRunItem.pastLocations.size()!=0){
-            PastLocation pastLocation = pastRunItem.pastLocations.get(0);
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(pastLocation.lat, pastLocation.lon)));
-            mMap.moveCamera(CameraUpdateFactory.zoomTo(15));
+
+        if(pastRunItem.pastLocations.size()>=2){
+            PastLocation startLocation = pastRunItem.pastLocations.get(0);
+            PastLocation endLocation = pastRunItem.pastLocations.get(pastRunItem.pastLocations.size()-1);
+            LatLng start = new LatLng(startLocation.lat, startLocation.lon);
+            LatLng end = new LatLng(endLocation.lat, startLocation.lon);
+
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 15));
+
+            /* Add Start Marker */
+            mMap.addMarker(new MarkerOptions()
+                    .position(start)
+                    .title("Start")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            );
+
+            /* Add Finish Marker */
+            mMap.addMarker(new MarkerOptions()
+                    .position(end)
+                    .title("Finish")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+            );
+
         }
 
-        // Add a marker in Sydney and move the camera
-        //LatLng sydney = new LatLng(-34, 151);\\
-        //mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        //mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
         mMap.addPolyline(getPath());
     }
 
@@ -60,9 +73,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Instantiates a new Polyline object and adds points to define a rectangle
         PolylineOptions rectOptions = new PolylineOptions();
 
-        Log.i(TAG, "LOCATIONS: " + pastRunItem.pastLocations.size());
+        //Log.i(TAG, "LOCATIONS: " + pastRunItem.pastLocations.size());
         for(PastLocation pastLocation: pastRunItem.pastLocations){
-            rectOptions.add(new LatLng(pastLocation.lat, pastLocation.lon));
+
+            rectOptions.add(new LatLng(pastLocation.lat, pastLocation.lon)).color(Color.BLUE);
         }
 
         return rectOptions;

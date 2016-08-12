@@ -26,15 +26,14 @@
         <activity
             android:name=".activities.RecordRunActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/record_activity"/>
+            android:label="@string/record_activity" />
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/setttings"/>
-
+            android:label="@string/setttings" />
         <activity
-            android:name=".activities.MapsActivity"
-            android:label="@string/title_activity_maps"/>
+            android:name=".activities.runinfo.MapsActivity"
+            android:label="@string/title_activity_maps" />
 
         <!-- Ad Activities -->
         <meta-data
@@ -60,7 +59,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-
+        <activity android:name=".activities.runinfo.RunInfoTabbedActivity"></activity>
     </application>
 
 </manifest>

@@ -11,6 +11,7 @@ public class PastLocation implements Parcelable{
     public double lon;
     public double speed;
     public double elevation;
+    /* Change to LatLng */
 
     public PastLocation(double lat, double lon, double speed, double elevation) {
         this.lat = lat;
