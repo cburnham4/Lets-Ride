@@ -45,7 +45,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private boolean locationPermissionsEnabled;
 
     // The minimum distance to change updates in metters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 2.5;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 5.0;
 
     // The minimum time beetwen updates in milliseconds
     private long MIN_TIME_BW_UPDATES = 3000;
