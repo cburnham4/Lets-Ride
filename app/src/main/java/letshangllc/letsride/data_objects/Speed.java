@@ -101,6 +101,6 @@ public class Speed {
             }
         }
         Log.i(TAG, "Max: " + max);
-        return max;
+        return max==-1 ? 0 : max;
     }
 }

@@ -123,7 +123,8 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
         SpeedUnits speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
         LengthUnits lengthUnits = LengthUnits.getLengthUnits(elevationUnitIndex);
-        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, lengthUnits,
+        LengthUnits distanceUnits =LengthUnits.getLengthUnits(distanceUnitIndex);
+        historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, distanceUnits,
                 speedUnits, this);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvHistoryOfRuns);
