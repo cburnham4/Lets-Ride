@@ -55,8 +55,6 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
         this.setupToolbar();
         this.getDay();
-        this.getRunData();
-        this.setupRecycleView();
         this.findViews();
     }
 
@@ -75,7 +73,9 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             " INNER JOIN "
             + DBTableConstants.DATES_TABLE + " ON " +
             DBTableConstants.DATES_TABLE + "." +DBTableConstants.DATE_ID +" = " +
-            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID;
+            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID +
+
+            " ORDER BY " + DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID + " DESC";
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
 
@@ -83,23 +83,23 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         Cursor c = db.rawQuery(sql, null);
         c.moveToFirst();
 
-        int prevNum = 1;
         if(c.getCount() == 0){
             c.close();
             db.close();
             return;
         }
-        String date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
-        double duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-        PastRunItem pastRunItem = new PastRunItem(prevNum, dayId, date, duration);
-        pastRunItems.add(pastRunItem);
+        int prevRunId = -1;
+        PastRunItem pastRunItem = null;
+        String date = null;
+        double duration;
+
         while(!c.isAfterLast()){
-            int runNum = c.getInt(c.getColumnIndex(DBTableConstants.RUN_NUMBER));
-            if(runNum != prevNum){
-                prevNum = runNum;
+            int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
+            if(runId != prevRunId){
+                prevRunId = runId;
                 date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
                 duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-                pastRunItem = new PastRunItem(runNum, dayId, date, duration);
+                pastRunItem = new PastRunItem(runId, dayId, date, duration);
                 pastRunItems.add(pastRunItem);
             }
 
@@ -108,7 +108,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
             double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
             pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
-            Log.i(TAG, "Lat: "+ lat +" LONG: "+lon + " RUN: " + runNum);
+            Log.i(TAG, "Lat: "+ lat +" LONG: "+lon + " RUN: " + runId);
             c.moveToNext();
         }
         c.close();
@@ -221,6 +221,15 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == SETTING_REQUEST){
             /* TODO: Change amounts when returned */
+            Log.i(TAG, "Returned from settings ");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        /* TODO Structure these to only do it when coming from certain activities */
+        this.getRunData();
+        this.setupRecycleView();
     }
 }
