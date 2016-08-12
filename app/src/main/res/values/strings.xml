@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Let\'s Ride</string>
 
+
     <!-- Permissions -->
     <string name="enable_location_service">Enable Location Services</string>
 
@@ -8,6 +9,7 @@
     <string name="history">History</string>
 
     <!-- Main Activity Labels -->
+    <string name="record_activity">Track Ride</string>
     <string name="max_speed">MAX SPEED</string>
     <string name="speed">SPEED</string>
     <string name="average">AVG: </string>
@@ -15,6 +17,7 @@
     <string name="max">MAX:</string>
     <string name="min">MIN:</string>
     <string name="duration">DURATION</string>
+    <string name="distance">DISTANCE</string>
 
     <string name="empty">--.--</string>
     <string name="time_zero">00:00:00</string>

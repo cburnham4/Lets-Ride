@@ -25,7 +25,8 @@
         </activity>
         <activity
             android:name=".activities.RecordRunActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize" />
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/record_activity"/>
         <activity
             android:name=".activities.SettingsActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"

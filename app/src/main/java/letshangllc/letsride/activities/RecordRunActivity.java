@@ -15,6 +15,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -90,6 +91,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
         this.getUserData();
         this.findViews();
+        this.setupToolbar();
         this.setupViews();
         this.requestPermission();
         this.requestLocationEnabled();
@@ -109,6 +111,26 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         lengthUnits = LengthUnits.getElevationUnits(elevationUnitIndex);
 
         databaseHelper = new LocationDatabaseHelper(this);
+
+
+    }
+
+    private void setupToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        if(toolbar != null){
+            /* Todo add confirmation dialog */
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    stopRecording();
+                    finish();
+                }
+            });
+        }
     }
 
     /* Make sure the user has location permissions enabled */
@@ -234,7 +256,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
             return;
         }
-        resetViewsAndData();
         locationManager.removeUpdates(this);
 
         stopWatch.stop();
@@ -250,18 +271,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             return;
         }
         locationManager.removeUpdates(this);
-    }
-
-    private void resetViewsAndData(){
-        tvDuration.setText(getString(R.string.time_zero));
-        tvCurrentSpeed.setText(getString(R.string.empty));
-        tvMaxSpeed.setText(getString(R.string.empty));
-        tvAvgSpeed.setText(getString(R.string.empty));
-        tvMinElevation.setText(getString(R.string.empty));
-        tvMaxElevation.setText(getString(R.string.empty));
-        tvCurrentElevation.setText(getString(R.string.empty));
-
-        speed.allSpeeds.clear();
     }
 
     @Override
@@ -303,6 +312,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             }
             pastLocations.add(new PastLocation(location.getLatitude(), location.getLongitude(),
                     currentSpeed, currentElevation));
+            /* TODO: Async class to calculate distance */
         }
     }
 
@@ -327,8 +337,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private void setupViews(){
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(lengthUnits.label);
-
-        ImageView imgCancel = (ImageView) findViewById(R.id.imgCancel);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -364,26 +372,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                         }).execute();
             }
         });
-
-        imgCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                /* TODO Add dialog and have set to true in prefs */
-                stopRecording();
-                finish();
-            }
-        });
-    }
-
-    /* Update the non current values for their new units */
-    private  void updateViewForUnits(){
-        tvSpeedUnits.setText(speedUnits.label);
-        tvElevationUnits.setText(lengthUnits.label);
-
-        tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers() * speedUnits.multiplier));
-        tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
-        tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMaxElevation() * lengthUnits.multiplier));
-        tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f", elevation.getMinElevation() * lengthUnits.multiplier));
     }
 
     public Runnable updateTimer = new Runnable() {
