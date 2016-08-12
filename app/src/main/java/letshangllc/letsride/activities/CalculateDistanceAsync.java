@@ -8,7 +8,6 @@ import java.util.Locale;
 
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.PastLocation;
-import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.data_objects.Speed;
 import letshangllc.letsride.enums.LengthUnits;
 
@@ -20,16 +19,15 @@ public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
     private Speed speed;
     private Elevation elevation;
     private LengthUnits distanceUnits;
-    private double distanceInMeters;
+    private double distanceInUnits;
     private TextView tvDistance;
 
-    public CalculateDistanceAsync(ArrayList<PastLocation> pastLocations, Speed speed, Elevation elevation,
+    public CalculateDistanceAsync(ArrayList<PastLocation> pastLocations, LengthUnits distanceUnits,
                                   TextView tvDistance, double currentDistance) {
         this.pastLocations = pastLocations;
-        this.speed = speed;
-        this.elevation = elevation;
+        this.distanceUnits = distanceUnits;
         this.tvDistance = tvDistance;
-        this.distanceInMeters = currentDistance;
+        this.distanceInUnits = currentDistance;
     }
 
     protected Double doInBackground(Void... voids) {
@@ -40,8 +38,8 @@ public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
         PastLocation firstLoc = pastLocations.get(size-2);
         PastLocation endLoc = pastLocations.get(size-1);
 
-        distanceInMeters += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon);
-        return distanceInMeters;
+        distanceInUnits += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon) *distanceUnits.multiplier;
+        return distanceInUnits;
     }
 
     @Override

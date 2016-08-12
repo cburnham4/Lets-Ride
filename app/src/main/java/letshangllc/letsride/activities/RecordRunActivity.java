@@ -72,7 +72,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
-            tvMinElevation, tvDuration, tvSpeedUnits, tvElevationUnits, tvDistance;
+            tvMinElevation, tvDuration, tvSpeedUnits, tvElevationUnits, tvDistance, tvDistanceUnits;
     private FloatingActionButton fabStartPauseRecording, fabStopRecording;
 
     /* Data */
@@ -314,7 +314,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                     currentSpeed, currentElevation));
             /* TODO: Async class to calculate distance */
             double currentDistance = Double.parseDouble(tvDistance.getText().toString());
-            new CalculateDistanceAsync(pastLocations, speed, elevation, tvDistance, currentDistance).execute();
+            new CalculateDistanceAsync(pastLocations, distanceUnits, tvDistance, currentDistance).execute();
         }
     }
 
@@ -330,6 +330,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         tvSpeedUnits = (TextView) findViewById(R.id.tvSpeedUnits);
         tvElevationUnits = (TextView) findViewById(R.id.tvElevationUnits);
         tvDistance = (TextView) findViewById(R.id.tvCurrentDistance);
+        tvDistanceUnits = (TextView) findViewById(R.id.tvDistanceUnits);
         fabStartPauseRecording = (FloatingActionButton) findViewById(R.id.fabStartPauseRecording);
         fabStopRecording = (FloatingActionButton) findViewById(R.id.fabStopRecording);
     }
@@ -338,6 +339,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private void setupViews(){
         tvSpeedUnits.setText(speedUnits.label);
         tvElevationUnits.setText(elevationUnits.label);
+        tvDistanceUnits.setText(distanceUnits.label);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override
