@@ -119,9 +119,10 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
         int elevationUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_elevation_index), "0"));
+        int distanceUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_distance_index), "0"));
 
         SpeedUnits speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
-        LengthUnits lengthUnits = LengthUnits.getElevationUnits(elevationUnitIndex);
+        LengthUnits lengthUnits = LengthUnits.getLengthUnits(elevationUnitIndex);
         historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, lengthUnits,
                 speedUnits, this);
 

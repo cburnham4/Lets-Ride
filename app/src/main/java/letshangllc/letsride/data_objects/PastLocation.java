@@ -45,7 +45,7 @@ public class PastLocation implements Parcelable{
                 Math.cos(lat1 * p) * Math.cos(lat2 * p) *
                         (1 - Math.cos((lon2 - lon1) * p))/2;
 
-        return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+        return 12742 * Math.asin(Math.sqrt(a))*1000; // 2 * R; R = 6371 km
     }
 
     @Override

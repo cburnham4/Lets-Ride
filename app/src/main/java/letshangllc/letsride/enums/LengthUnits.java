@@ -19,7 +19,7 @@ public enum LengthUnits {
         this.multiplier = multiplier;
     }
 
-    public static LengthUnits getElevationUnits(int index){
+    public static LengthUnits getLengthUnits(int index){
         switch (index){
             case 0:
                 return FEET;

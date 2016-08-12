@@ -18,7 +18,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,7 +56,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private Speed speed = new Speed();
     private Elevation elevation = new Elevation();
     private ArrayList<PastLocation> pastLocations = new ArrayList<>();
-    private double distanceInMeters = 0;
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -69,16 +67,20 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
     /* Units */
     private SpeedUnits speedUnits;
-    private LengthUnits lengthUnits;
+    private LengthUnits elevationUnits;
+    private LengthUnits distanceUnits;
 
     /* VIEWS */
     private TextView tvCurrentSpeed, tvMaxSpeed, tvAvgSpeed, tvCurrentElevation, tvMaxElevation,
-            tvMinElevation, tvDuration, tvSpeedUnits, tvElevationUnits;
+            tvMinElevation, tvDuration, tvSpeedUnits, tvElevationUnits, tvDistance;
     private FloatingActionButton fabStartPauseRecording, fabStopRecording;
 
     /* Data */
     private LocationDatabaseHelper databaseHelper;
     private int dayId;
+
+    /* Async calculator */
+    private CalculateDistanceAsync calculateDistanceAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,16 +105,14 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
         int elevationUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_elevation_index), "0"));
-        MIN_TIME_BW_UPDATES = (long) settings.getLong(getString(R.string.user_pref_min_time_loc_request), 0);
+        int distanceUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_distance_index), "0"));
+        MIN_TIME_BW_UPDATES = 1000 * (long) settings.getInt(getString(R.string.user_pref_min_time_loc_request), 3);
 
-        Log.i(TAG, "Speed Index " + speedUnitIndex);
-        Log.i(TAG, "elevationL " + elevationUnitIndex);
         speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
-        lengthUnits = LengthUnits.getElevationUnits(elevationUnitIndex);
+        elevationUnits = LengthUnits.getLengthUnits(elevationUnitIndex);
+        distanceUnits = LengthUnits.getLengthUnits(distanceUnitIndex);
 
         databaseHelper = new LocationDatabaseHelper(this);
-
-
     }
 
     private void setupToolbar(){
@@ -286,7 +286,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
             /* Convert speed and elevations to perferred units */
             double speedInUnits = currentSpeed * speedUnits.multiplier;
-            double elivationInUnits = currentElevation * lengthUnits.multiplier;
+            double elivationInUnits = currentElevation * elevationUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
             tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
@@ -301,18 +301,20 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
 
                 tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                        elevation.getMaxElevation() * lengthUnits.multiplier));
+                        elevation.getMaxElevation() * elevationUnits.multiplier));
 
                 double minElevation =  elevation.getMinElevation();
                 if(minElevation != 0){
                     tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                            minElevation * lengthUnits.multiplier));
+                            minElevation * elevationUnits.multiplier));
                 }
 
             }
             pastLocations.add(new PastLocation(location.getLatitude(), location.getLongitude(),
                     currentSpeed, currentElevation));
             /* TODO: Async class to calculate distance */
+            double currentDistance = Double.parseDouble(tvDistance.getText().toString());
+            new CalculateDistanceAsync(pastLocations, speed, elevation, tvDistance, currentDistance).execute();
         }
     }
 
@@ -327,16 +329,15 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         tvDuration = (TextView) findViewById(R.id.tvDuration);
         tvSpeedUnits = (TextView) findViewById(R.id.tvSpeedUnits);
         tvElevationUnits = (TextView) findViewById(R.id.tvElevationUnits);
+        tvDistance = (TextView) findViewById(R.id.tvCurrentDistance);
         fabStartPauseRecording = (FloatingActionButton) findViewById(R.id.fabStartPauseRecording);
         fabStopRecording = (FloatingActionButton) findViewById(R.id.fabStopRecording);
-
-
     }
 
     /* Set views text and listeners */
     private void setupViews(){
         tvSpeedUnits.setText(speedUnits.label);
-        tvElevationUnits.setText(lengthUnits.label);
+        tvElevationUnits.setText(elevationUnits.label);
 
         fabStartPauseRecording.setOnClickListener(new View.OnClickListener() {
             @Override

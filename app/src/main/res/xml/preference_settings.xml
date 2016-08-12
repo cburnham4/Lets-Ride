@@ -9,7 +9,7 @@
         android:dialogTitle="@string/speed_units"
         android:entries="@array/speed_units"
         android:entryValues="@array/speed_indexes"
-        android:defaultValue="mph"
+        android:defaultValue="0"
         android:summary="Select your preferred speed units"/>
 
     <!-- Distance -->
@@ -19,7 +19,7 @@
         android:dialogTitle="@string/distance_units"
         android:entries="@array/length_units"
         android:entryValues="@array/length_indexes"
-        android:defaultValue="ft"
+        android:defaultValue="0"
         android:summary="Select your preferred distance units"/>
 
     <!-- Elevation -->
@@ -29,11 +29,11 @@
         android:dialogTitle="@string/elevation_units"
         android:entries="@array/length_units"
         android:entryValues="@array/length_indexes"
-        android:defaultValue="ft"
+        android:defaultValue="0"
         android:summary="Select your preferred elevation units"/>
 
     <com.pavelsikun.seekbarpreference.SeekBarPreference
-        android:key="your_pref_key"
+        android:key="@string/user_pref_min_time_loc_request"
         android:title="Location Request Interval"
         android:summary="Increasing value will decrease battery and data usage but will decrease the application's accuracy."
         android:defaultValue="3"

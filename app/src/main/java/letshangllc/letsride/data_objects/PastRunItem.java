@@ -60,7 +60,7 @@ public class PastRunItem implements Parcelable{
             pastLocation = pastLocations.get(i);
             km+= PastLocation.distance(prevLocation.lat, prevLocation.lon, pastLocation.lat, pastLocation.lon);
         }
-        return km * 1000;
+        return km;
     }
 
     public String getDate(){
