@@ -13,37 +13,39 @@ import java.util.ArrayList;
 import java.util.List;
 
 import letshangllc.letsride.R;
+import letshangllc.letsride.data_objects.PastRunItem;
 
 public class RunInfoTabbedActivity extends AppCompatActivity {
-
+    private Bundle args;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_run_info_tabbed);
 
+        PastRunItem pastRunItem = (PastRunItem) getIntent().getParcelableExtra(getString(R.string.past_run_item_extra));
+        args = new Bundle();
+        args.putParcelable(getString(R.string.past_run_item_extra), pastRunItem);
 
-        Toolbar toolbar;
-        TabLayout tabLayout;
-        ViewPager viewPager;
-
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        viewPager = (ViewPager) findViewById(R.id.vp_run_info_activity);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_run_info_activity);
         setupViewPager(viewPager);
 
-        tabLayout = (TabLayout) findViewById(R.id.tl_run_info_activity);
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_run_info_activity);
         tabLayout.setupWithViewPager(viewPager);
 
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new ExercisesFragment(), "Exercises");
-        adapter.addFragment(new MuscleGroupFragment(), "Muscle Groups");
-        adapter.addFragment(new RoutinesFragment(), "Routines");
+
+        Fragment mapFragment = new MapFragment();
+        mapFragment.setArguments(args);
+        adapter.addFragment(mapFragment, "Exercises");
+
         viewPager.setAdapter(adapter);
     }
 

@@ -24,7 +24,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
-import letshangllc.letsride.activities.runinfo.MapsActivity;
+
+import letshangllc.letsride.activities.runinfo.RunInfoTabbedActivity;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.adapter.RecyclerViewClickListener;
 import letshangllc.letsride.data.DBTableConstants;
@@ -191,7 +192,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     public void recyclerViewListClicked(View v, final int position) {
         final PastRunItem pastRunItem = pastRunItems.get(position);
 
-        Intent intent = new Intent(HistoryActivity.this, MapsActivity.class);
+        Intent intent = new Intent(HistoryActivity.this, RunInfoTabbedActivity.class);
         intent.putExtra(getString(R.string.past_run_item_extra), pastRunItem);
 
         startActivity(intent);
