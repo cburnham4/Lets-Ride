@@ -21,6 +21,12 @@ public class SQLCreateTables {
                     DBTableConstants.RUN_ID + " integer primary key AUTOINCREMENT, " +
                     DBTableConstants.RUN_NUMBER + " real, " +
                     DBTableConstants.RUN_DURATION + " real, " +
+                    DBTableConstants.RUN_DISTANCE + " real, " +
+                    DBTableConstants.RUN_START_TIME + " real, " +
+                    DBTableConstants.RUN_MAX_SPEED + " real, " +
+                    DBTableConstants.RUN_AVG_SPEED + " real, " +
+                    DBTableConstants.RUN_MAX_ELEVATION + " real, " +
+                    DBTableConstants.RUN_MIN_ELEVATION + " real, " +
                     DBTableConstants.DATE_ID + " integer, " +
                     "FOREIGN KEY(" + DBTableConstants.DATE_ID  + ") " +
                     "REFERENCES " + DBTableConstants.DATES_TABLE + "(" + DBTableConstants.DATE_ID + ")" +

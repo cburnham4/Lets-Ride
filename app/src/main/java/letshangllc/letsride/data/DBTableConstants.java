@@ -20,4 +20,10 @@ public class DBTableConstants {
     public final static String RUN_ID = "RUN_ID";
     public final static String RUN_NUMBER = "RUN_NUMBERS";
     public final static String RUN_DURATION = "RUN_DURATION";
+    public final static String RUN_DISTANCE = "RUN_DISTANCE";
+    public final static String RUN_START_TIME = "RUN_START_TIME";
+    public final static String RUN_MAX_SPEED = "RUN_MAX_SPEED";
+    public final static String RUN_AVG_SPEED = "RUN_AVG_SPEED";
+    public final static String RUN_MAX_ELEVATION = "RUN_MAX_ELEVATION";
+    public final static String RUN_MIN_ELEVATION = "RUN_MIN_ELEVATION";
 }
