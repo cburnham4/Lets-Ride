@@ -60,6 +60,9 @@ public class RunStatsFragment extends Fragment {
         runStatItems = new ArrayList<>();
 
         addDuration();
+        addDistance();
+        addSpeeds();
+        addElevations();
 
     }
 
@@ -68,6 +71,32 @@ public class RunStatsFragment extends Fragment {
         String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
                 times[1],times[2]);
         runStatItems.add(new RunStatItem(R.drawable.ic_alarm_black_36dp, "Duration", time));
+    }
+
+    private void addDistance(){
+        String distance = String.format(Locale.getDefault(), "%.1f %s",
+                pastRunItem.distance * distanceUnits.multiplier, distanceUnits.label);
+        runStatItems.add(new RunStatItem(R.drawable.ic_distance_traveled, "Distance", distance));
+    }
+
+    private void addSpeeds(){
+        String maxSpeed = String.format(Locale.getDefault(), "%.1s %s",
+                pastRunItem.maxSpeed * speedUnits.multiplier, speedUnits.label);
+        String avgSpeed = String.format(Locale.getDefault(), "%.1f %s",
+                pastRunItem.avgSpeed * speedUnits.multiplier, speedUnits.label);
+
+        runStatItems.add(new RunStatItem(R.drawable.ic_speedometer, "Max. Speed", maxSpeed));
+        runStatItems.add(new RunStatItem(R.drawable.ic_speedometer, "Avg. Speed", avgSpeed));
+    }
+
+    private void addElevations(){
+        String maxElevation = String.format(Locale.getDefault(), "%.1f %s",
+                pastRunItem.maxElevation * elevationUnits.multiplier, elevationUnits.label);
+        String minElevation = String.format(Locale.getDefault(), "%.1f %s",
+                pastRunItem.minElevation * elevationUnits.multiplier, elevationUnits.label);
+
+        runStatItems.add(new RunStatItem(R.drawable.ic_snowed_mountains, "Max. Elevation", maxElevation));
+        runStatItems.add(new RunStatItem(R.drawable.ic_snowed_mountains, "Min. Elevation", minElevation));
     }
 
 

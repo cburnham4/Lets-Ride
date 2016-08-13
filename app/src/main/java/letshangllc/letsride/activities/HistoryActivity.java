@@ -116,7 +116,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
             double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
             pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
-            Log.i(TAG, "Lat: "+ lat +" LONG: "+lon + " RUN: " + runId);
+
             c.moveToNext();
         }
         c.close();
