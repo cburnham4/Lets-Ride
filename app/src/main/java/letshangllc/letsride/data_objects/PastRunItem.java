@@ -18,6 +18,7 @@ public class PastRunItem implements Parcelable{
     public String date;
     public double durationInMilli;
     public double distance;
+    public long startTime;
     public double maxSpeed;
     public double avgSpeed;
     public double maxElevation;
@@ -25,12 +26,14 @@ public class PastRunItem implements Parcelable{
 
     public ArrayList<PastLocation> pastLocations  = new ArrayList<>();
 
-    public PastRunItem(int runId, int dayId, String date, double durationInMilli, double distance, double maxSpeed, double avgSpeed, double maxElevation, double minElevation) {
+    public PastRunItem(int runId, int dayId, String date, double durationInMilli, double distance,
+                       long startTime, double maxSpeed, double avgSpeed, double maxElevation, double minElevation) {
         this.runId = runId;
         this.dayId = dayId;
         this.date = date;
         this.durationInMilli = durationInMilli;
         this.distance = distance;
+        this.startTime = startTime;
         this.maxSpeed = maxSpeed;
         this.avgSpeed = avgSpeed;
         this.maxElevation = maxElevation;
@@ -56,6 +59,7 @@ public class PastRunItem implements Parcelable{
         date = in.readString();
         durationInMilli = in.readDouble();
         distance = in.readDouble();
+        startTime = in.readLong();
         maxSpeed = in.readDouble();
         avgSpeed = in.readDouble();
         maxElevation = in.readDouble();
@@ -120,6 +124,7 @@ public class PastRunItem implements Parcelable{
         parcel.writeString(date);
         parcel.writeDouble(durationInMilli);
         parcel.writeDouble(distance);
+        parcel.writeLong(startTime);
         parcel.writeDouble(maxSpeed);
         parcel.writeDouble(avgSpeed);
         parcel.writeDouble(maxElevation);

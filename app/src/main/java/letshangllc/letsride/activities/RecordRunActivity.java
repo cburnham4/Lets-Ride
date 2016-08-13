@@ -247,6 +247,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             handler.post(updateTimer);
             if(recordRunItem.startTime == 0){
                 recordRunItem.startTime = System.currentTimeMillis();
+                Log.i(TAG, "startTim = " + recordRunItem.startTime);
             }
         } else{
             if(!locationEnabled){

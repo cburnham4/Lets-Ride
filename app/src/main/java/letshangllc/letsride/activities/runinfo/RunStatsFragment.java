@@ -2,16 +2,22 @@ package letshangllc.letsride.activities.runinfo;
 
 
 import android.content.SharedPreferences;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
@@ -34,6 +40,8 @@ public class RunStatsFragment extends Fragment {
     private SpeedUnits speedUnits;
     private LengthUnits elevationUnits;
     private LengthUnits distanceUnits;
+
+    private final static String TAG = RunStatsFragment.class.getSimpleName();
 
     public RunStatsFragment() {
         // Required empty public constructor
@@ -63,6 +71,7 @@ public class RunStatsFragment extends Fragment {
         addDistance();
         addSpeeds();
         addElevations();
+        addStartTime();
 
     }
 
@@ -94,9 +103,22 @@ public class RunStatsFragment extends Fragment {
                 pastRunItem.maxElevation * elevationUnits.multiplier, elevationUnits.label);
         String minElevation = String.format(Locale.getDefault(), "%.1f %s",
                 pastRunItem.minElevation * elevationUnits.multiplier, elevationUnits.label);
+        double elevationChange = pastRunItem.minElevation - pastRunItem.maxElevation;
+        String change = String.format(Locale.getDefault(), "%.1f %s",
+                elevationChange * elevationUnits.multiplier, elevationUnits.label);
 
         runStatItems.add(new RunStatItem(R.drawable.ic_snowed_mountains, "Max. Elevation", maxElevation));
         runStatItems.add(new RunStatItem(R.drawable.ic_snowed_mountains, "Min. Elevation", minElevation));
+        runStatItems.add(new RunStatItem(R.drawable.ic_snowed_mountains, "Elevation Change",change));
+    }
+
+    private void addStartTime(){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(pastRunItem.startTime);
+        Log.i(TAG, " time: " + pastRunItem.startTime);
+        Date date = calendar.getTime();
+        DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
+        runStatItems.add(new RunStatItem(R.drawable.ic_speedometer, "Start Time", dateFormat.format(date)));
     }
 
 

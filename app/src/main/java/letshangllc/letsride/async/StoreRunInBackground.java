@@ -6,6 +6,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
     private StoringDataComplete callback;
     private ProgressDialog dialog;
     private Context context;
+
+    private static final String TAG = StoreRunInBackground.class.getSimpleName();
 
     public StoreRunInBackground(ArrayList<PastLocation> pastLocations, RecordRunItem recordRunItem,
                                 LocationDatabaseHelper locationDatabaseHelper, Context context, StoringDataComplete callback) {
@@ -64,6 +67,8 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
         }
 
         c.close();
+
+        Log.i(TAG, "TIME: " + recordRunItem.startTime);
 
          /* Insert a new run with the new run */
         ContentValues values = new ContentValues();

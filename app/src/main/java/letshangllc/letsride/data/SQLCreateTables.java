@@ -22,7 +22,7 @@ public class SQLCreateTables {
                     DBTableConstants.RUN_NUMBER + " real, " +
                     DBTableConstants.RUN_DURATION + " real, " +
                     DBTableConstants.RUN_DISTANCE + " real, " +
-                    DBTableConstants.RUN_START_TIME + " real, " +
+                    DBTableConstants.RUN_START_TIME + " INTEGER, " +
                     DBTableConstants.RUN_MAX_SPEED + " real, " +
                     DBTableConstants.RUN_AVG_SPEED + " real, " +
                     DBTableConstants.RUN_MAX_ELEVATION + " real, " +

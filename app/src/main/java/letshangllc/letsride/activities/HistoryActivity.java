@@ -94,6 +94,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         PastRunItem pastRunItem = null;
         String date;
         double duration, distance, maxSpeed, avgSpeed, maxElevation, minElevation;
+        long startTime;
 
         while(!c.isAfterLast()){
             int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
@@ -106,7 +107,9 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
                 maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
                 minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
-                pastRunItem = new PastRunItem(runId, dayId, date, duration, distance, maxSpeed, avgSpeed,
+                startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
+                Log.i(TAG, "START TIME: " +startTime);
+                pastRunItem = new PastRunItem(runId, dayId, date, duration, distance, startTime, maxSpeed, avgSpeed,
                         maxElevation, minElevation);
                 pastRunItems.add(pastRunItem);
             }
