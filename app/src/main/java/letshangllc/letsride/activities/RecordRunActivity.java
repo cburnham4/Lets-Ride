@@ -48,7 +48,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private boolean locationPermissionsEnabled;
 
     // The minimum distance to change updates in metters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 5.0;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 4.0;
 
     // The minimum time beetwen updates in milliseconds
     private long MIN_TIME_BW_UPDATES = 3000;
@@ -286,6 +286,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
+            /* TODO: Fix max speeds and elevations */
             double currentSpeed = location.getSpeed();
             double currentElevation = location.getAltitude();
 
@@ -321,8 +322,9 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             }
             pastLocations.add(new PastLocation(location.getLatitude(), location.getLongitude(),
                     currentSpeed, currentElevation));
-            /* TODO: Async class to calculate distance */
-            double currentDistance = Double.parseDouble(tvDistance.getText().toString());
+
+            /* Async class to calculate distance */
+            double currentDistance = recordRunItem.distance;
             new CalculateDistanceAsync(pastLocations, distanceUnits, tvDistance, currentDistance,
                     new RunCaclulationsListener() {
                         @Override

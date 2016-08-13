@@ -38,7 +38,7 @@ public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
         PastLocation firstLoc = pastLocations.get(size-2);
         PastLocation endLoc = pastLocations.get(size-1);
 
-        distanceInUnits += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon); //*distanceUnits.multiplier;
+        distanceInUnits += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon);
         return distanceInUnits;
     }
 
@@ -46,6 +46,5 @@ public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
     protected void onPostExecute(Double distance) {
         super.onPostExecute(distance);
         caclulationsListener.onCalculationsComplete(distance);
-        //tvDistance.setText(String.format(Locale.getDefault(), "%.1f", distance));
     }
 }
