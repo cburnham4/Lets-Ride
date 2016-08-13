@@ -44,7 +44,11 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
 
         Fragment mapFragment = new MapFragment();
         mapFragment.setArguments(args);
-        adapter.addFragment(mapFragment, "Exercises");
+        adapter.addFragment(mapFragment, "Map");
+
+        Fragment runStatsFragment = new RunStatsFragment();
+        runStatsFragment.setArguments(args);
+        adapter.addFragment(runStatsFragment, "Statistics");
 
         viewPager.setAdapter(adapter);
     }
