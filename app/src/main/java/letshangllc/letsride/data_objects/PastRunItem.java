@@ -27,30 +27,6 @@ public class PastRunItem implements Parcelable{
         this.durationInMilli = durationInMilli;
     }
 
-    protected PastRunItem(Parcel in) {
-        runId = in.readInt();
-        dayId = in.readInt();
-        date = in.readString();
-        maxSpeed = in.readDouble();
-        durationInMilli = in.readDouble();
-        //pastLocations = in.createTypedArrayList(PastLocation.CREATOR);
-        in.readTypedList(pastLocations, PastLocation.CREATOR);
-        //PastLocation[] pastLocations1 = (PastLocation[]) in.readParcelableArray(PastLocation.class.getClassLoader());
-        //pastLocations = new ArrayList<PastLocation>((ArrayList<PastLocation>) Arrays.asList(pastLocations1));
-    }
-
-    public static final Creator<PastRunItem> CREATOR = new Creator<PastRunItem>() {
-        @Override
-        public PastRunItem createFromParcel(Parcel in) {
-            return new PastRunItem(in);
-        }
-
-        @Override
-        public PastRunItem[] newArray(int size) {
-            return new PastRunItem[size];
-        }
-    };
-
     public double getDistance(){
         double km = 0;
         PastLocation prevLocation;
@@ -75,6 +51,26 @@ public class PastRunItem implements Parcelable{
         return date;
     }
 
+    protected PastRunItem(Parcel in) {
+        runId = in.readInt();
+        dayId = in.readInt();
+        date = in.readString();
+        maxSpeed = in.readDouble();
+        durationInMilli = in.readDouble();
+        in.readTypedList(pastLocations, PastLocation.CREATOR);
+    }
+
+    public static final Creator<PastRunItem> CREATOR = new Creator<PastRunItem>() {
+        @Override
+        public PastRunItem createFromParcel(Parcel in) {
+            return new PastRunItem(in);
+        }
+
+        @Override
+        public PastRunItem[] newArray(int size) {
+            return new PastRunItem[size];
+        }
+    };
 
     @Override
     public int describeContents() {

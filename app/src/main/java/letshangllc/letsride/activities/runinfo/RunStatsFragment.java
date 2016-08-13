@@ -60,7 +60,17 @@ public class RunStatsFragment extends Fragment {
         runStatItems = new ArrayList<>();
 
         addDuration();
+
     }
+
+    private void addDuration(){
+        int[] times = StopWatch.milliToHourMinSecs(pastRunItem.durationInMilli);
+        String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
+                times[1],times[2]);
+        runStatItems.add(new RunStatItem(R.drawable.ic_alarm_black_36dp, "Duration", time));
+    }
+
+
 
     private void getUnits(){
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this.getContext());
@@ -86,11 +96,6 @@ public class RunStatsFragment extends Fragment {
         recyclerView.setAdapter(runStatsAdapter);
     }
 
-    private void addDuration(){
-        int[] times = StopWatch.milliToHourMinSecs(pastRunItem.durationInMilli);
-        String time = String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
-                times[1],times[2]);
-        runStatItems.add(new RunStatItem(R.drawable.ic_add_white_48dp, "Duration", time));
-    }
+
 
 }
