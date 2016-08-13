@@ -27,6 +27,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void setupToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        if(toolbar != null){getSupportActionBar().setDisplayHomeAsUpEnabled(true);}
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private AdsHelper adsHelper;

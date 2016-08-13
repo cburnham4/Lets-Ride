@@ -39,6 +39,7 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
         });
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.vp_run_info_activity);
+        viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_run_info_activity);

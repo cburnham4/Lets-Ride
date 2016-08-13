@@ -233,6 +233,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         if(requestCode == SETTING_REQUEST){
             /* TODO: Change amounts when returned */
             Log.i(TAG, "Returned from settings ");
+            HistoryActivity.this.setupRecycleView();
         }
     }
 
