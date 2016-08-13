@@ -4,11 +4,13 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="@dimen/stat_icon_size"
-        android:layout_height="@dimen/stat_icon_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:id="@+id/imgStatIcon"
-        android:padding="@dimen/stat_icon_padding"/>
+        android:padding="@dimen/stat_icon_padding"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true" />
 
     <TextView
         android:layout_width="wrap_content"

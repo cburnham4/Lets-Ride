@@ -67,7 +67,7 @@ public class HistoryItemsAdapter extends RecyclerView.Adapter<HistoryItemsAdapte
         int[] times = StopWatch.milliToHourMinSecs(item.durationInMilli);
 
         viewHolder.tvMainText.setText(String.format(Locale.getDefault(), "%.2f %s",
-                item.getDistance() * lengthUnits.multiplier, lengthUnits.label));
+                item.distance * lengthUnits.multiplier, lengthUnits.label));
         viewHolder.tvSecondaryText.setText(String.format(Locale.getDefault(), "%02d:%02d:%02d", times[0],
                 times[1],times[2]));
         viewHolder.tvDate.setText(item.getDate());
