@@ -24,14 +24,17 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import letshangllc.letsride.data.StoringDataComplete;
+import letshangllc.letsride.async.CalculateDistanceAsync;
+import letshangllc.letsride.async.RunCaclulationsListener;
+import letshangllc.letsride.async.StoringDataComplete;
 import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.objects.AdsHelper;
 import letshangllc.letsride.R;
 import letshangllc.letsride.data.LocationDatabaseHelper;
-import letshangllc.letsride.data.inserts.StoreRunInBackground;
+import letshangllc.letsride.async.StoreRunInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
+import letshangllc.letsride.objects.RecordRunItem;
 import letshangllc.letsride.objects.StopWatch;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
@@ -56,6 +59,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private Speed speed = new Speed();
     private Elevation elevation = new Elevation();
     private ArrayList<PastLocation> pastLocations = new ArrayList<>();
+    private RecordRunItem recordRunItem;
 
     /* Timing Variables */
     private StopWatch stopWatch = new StopWatch();
@@ -113,6 +117,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         distanceUnits = LengthUnits.getLengthUnits(distanceUnitIndex);
 
         databaseHelper = new LocationDatabaseHelper(this);
+
+        recordRunItem = new RecordRunItem(dayId, 0,0,0,0,0,0,0);
     }
 
     private void setupToolbar(){
@@ -239,6 +245,9 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             stopWatch.start();
             /* Start the handler to request times from stopwatch */
             handler.post(updateTimer);
+            if(recordRunItem.startTime == 0){
+                recordRunItem.startTime = System.currentTimeMillis();
+            }
         } else{
             if(!locationEnabled){
                 requestLocationEnabled();
@@ -314,7 +323,15 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                     currentSpeed, currentElevation));
             /* TODO: Async class to calculate distance */
             double currentDistance = Double.parseDouble(tvDistance.getText().toString());
-            new CalculateDistanceAsync(pastLocations, distanceUnits, tvDistance, currentDistance).execute();
+            new CalculateDistanceAsync(pastLocations, distanceUnits, tvDistance, currentDistance,
+                    new RunCaclulationsListener() {
+                        @Override
+                        public void onCalculationsComplete(double distanceInMeters) {
+                            tvDistance.setText(String.format(Locale.getDefault(), "%.1f",
+                                    distanceInMeters * distanceUnits.multiplier));
+                            recordRunItem.distance = distanceInMeters;
+                        }
+                    }).execute();
         }
     }
 
@@ -364,8 +381,13 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                 /* TODO: Store Data */
                 fabStopRecording.setVisibility(View.GONE);
                 stopRecording();
-                new StoreRunInBackground(pastLocations, dayId, stopWatch.getElapsedTime(),
-                        databaseHelper, RecordRunActivity.this,
+                recordRunItem.duration = stopWatch.getElapsedTime();
+                recordRunItem.maxSpeed = speed.getMaxSpeeds();
+                recordRunItem.avgSpeed = speed.getAverageWithoutOutliers();
+                recordRunItem.maxElevation = elevation.getMaxElevation();
+                recordRunItem.minElevation = elevation.getMinElevation();
+
+                new StoreRunInBackground(pastLocations, recordRunItem, databaseHelper, RecordRunActivity.this,
                         new StoringDataComplete() {
                             @Override
                             public void onDataStored() {

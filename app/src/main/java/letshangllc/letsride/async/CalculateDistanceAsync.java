@@ -1,4 +1,4 @@
-package letshangllc.letsride.activities;
+package letshangllc.letsride.async;
 
 import android.os.AsyncTask;
 import android.widget.TextView;
@@ -16,18 +16,18 @@ import letshangllc.letsride.enums.LengthUnits;
  */
 public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
     private ArrayList<PastLocation> pastLocations;
-    private Speed speed;
-    private Elevation elevation;
+    private RunCaclulationsListener caclulationsListener;
     private LengthUnits distanceUnits;
     private double distanceInUnits;
     private TextView tvDistance;
 
     public CalculateDistanceAsync(ArrayList<PastLocation> pastLocations, LengthUnits distanceUnits,
-                                  TextView tvDistance, double currentDistance) {
+                                  TextView tvDistance, double currentDistance, RunCaclulationsListener caclulationsListener) {
         this.pastLocations = pastLocations;
         this.distanceUnits = distanceUnits;
         this.tvDistance = tvDistance;
         this.distanceInUnits = currentDistance;
+        this.caclulationsListener = caclulationsListener;
     }
 
     protected Double doInBackground(Void... voids) {
@@ -38,13 +38,14 @@ public class CalculateDistanceAsync extends AsyncTask<Void, Void, Double> {
         PastLocation firstLoc = pastLocations.get(size-2);
         PastLocation endLoc = pastLocations.get(size-1);
 
-        distanceInUnits += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon) *distanceUnits.multiplier;
+        distanceInUnits += PastLocation.distance(firstLoc.lat, firstLoc.lon, endLoc.lat, endLoc.lon); //*distanceUnits.multiplier;
         return distanceInUnits;
     }
 
     @Override
     protected void onPostExecute(Double distance) {
         super.onPostExecute(distance);
-        tvDistance.setText(String.format(Locale.getDefault(), "%.1f", distance));
+        caclulationsListener.onCalculationsComplete(distance);
+        //tvDistance.setText(String.format(Locale.getDefault(), "%.1f", distance));
     }
 }

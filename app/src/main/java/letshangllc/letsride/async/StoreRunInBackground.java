@@ -1,19 +1,18 @@
-package letshangllc.letsride.data.inserts;
+package letshangllc.letsride.async;
 
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
 import android.os.AsyncTask;
 
 import java.util.ArrayList;
 
 import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
-import letshangllc.letsride.data.StoringDataComplete;
 import letshangllc.letsride.data_objects.PastLocation;
+import letshangllc.letsride.objects.RecordRunItem;
 
 /**
  * Created by Carl on 8/8/2016.
@@ -21,19 +20,17 @@ import letshangllc.letsride.data_objects.PastLocation;
 public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
 
     private ArrayList<PastLocation> pastLocations;
-    private int dayId;
-    private double duration;
+    private RecordRunItem recordRunItem;
     private LocationDatabaseHelper locationDatabaseHelper;
 
     private StoringDataComplete callback;
     private ProgressDialog dialog;
     private Context context;
 
-    public StoreRunInBackground(ArrayList<PastLocation> pastLocations, int dayId, double duration,
+    public StoreRunInBackground(ArrayList<PastLocation> pastLocations, RecordRunItem recordRunItem,
                                 LocationDatabaseHelper locationDatabaseHelper, Context context, StoringDataComplete callback) {
         this.pastLocations = pastLocations;
-        this.dayId = dayId;
-        this.duration = duration;
+        this.recordRunItem = recordRunItem;
         this.locationDatabaseHelper = locationDatabaseHelper;
         this.callback = callback;
         this.context = context;
@@ -55,7 +52,7 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
          /* Get the max run num for that day */
         String sql = "SELECT MAX("+DBTableConstants.RUN_NUMBER+")FROM " + DBTableConstants.RUNS_TABLE +
                 " WHERE " +DBTableConstants.DATE_ID +
-                " = " + dayId;
+                " = " + recordRunItem.dayId;
 
         int runNum = 1;
         Cursor c = db.rawQuery(sql, null);
@@ -70,9 +67,15 @@ public class StoreRunInBackground extends AsyncTask<Void, Void, Void>{
 
          /* Insert a new run with the new run */
         ContentValues values = new ContentValues();
-        values.put(DBTableConstants.DATE_ID, dayId);
+        values.put(DBTableConstants.DATE_ID, recordRunItem.dayId);
         values.put(DBTableConstants.RUN_NUMBER, runNum);
-        values.put(DBTableConstants.RUN_DURATION, duration);
+        values.put(DBTableConstants.RUN_DURATION, recordRunItem.duration);
+        values.put(DBTableConstants.RUN_DISTANCE, recordRunItem.distance);
+        values.put(DBTableConstants.RUN_START_TIME, recordRunItem.startTime);
+        values.put(DBTableConstants.RUN_MAX_SPEED, recordRunItem.maxSpeed);
+        values.put(DBTableConstants.RUN_AVG_SPEED, recordRunItem.avgSpeed);
+        values.put(DBTableConstants.RUN_MAX_ELEVATION, recordRunItem.maxElevation);
+        values.put(DBTableConstants.RUN_MIN_ELEVATION, recordRunItem.minElevation);
 
          /* Insert values into db */
         int runId = (int) db.insert(DBTableConstants.RUNS_TABLE, null, values);
