@@ -118,7 +118,7 @@ public class RunStatsFragment extends Fragment {
         Log.i(TAG, " time: " + pastRunItem.startTime);
         Date date = calendar.getTime();
         DateFormat dateFormat = new SimpleDateFormat("hh:mm a");
-        runStatItems.add(new RunStatItem(R.drawable.ic_speedometer, "Start Time", dateFormat.format(date)));
+        runStatItems.add(new RunStatItem(R.drawable.ic_access_time_black_36dp, "Start Time", dateFormat.format(date)));
     }
 
 
