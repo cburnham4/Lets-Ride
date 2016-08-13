@@ -43,8 +43,12 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_run_info_activity);
         tabLayout.setupWithViewPager(viewPager);
-
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_map_location);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_assignment_white_36dp);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_assessment_white_36dp);
     }
+
+
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
@@ -56,6 +60,10 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
         Fragment runStatsFragment = new RunStatsFragment();
         runStatsFragment.setArguments(args);
         adapter.addFragment(runStatsFragment, "Statistics");
+
+        Fragment runGraphFragment = new RunGraphFragment();
+        runGraphFragment.setArguments(args);
+        adapter.addFragment(runGraphFragment, "Graphs");
 
         viewPager.setAdapter(adapter);
     }
@@ -85,7 +93,7 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
+            return null;
         }
     }
 }
