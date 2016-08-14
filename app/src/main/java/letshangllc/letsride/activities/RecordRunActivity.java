@@ -28,14 +28,14 @@ import letshangllc.letsride.async.CalculateDistanceAsync;
 import letshangllc.letsride.async.RunCaclulationsListener;
 import letshangllc.letsride.async.StoringDataComplete;
 import letshangllc.letsride.data_objects.PastLocation;
-import letshangllc.letsride.objects.AdsHelper;
+import letshangllc.letsride.helpers.AdsHelper;
 import letshangllc.letsride.R;
 import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.async.StoreRunInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
-import letshangllc.letsride.objects.RecordRunItem;
-import letshangllc.letsride.objects.StopWatch;
+import letshangllc.letsride.helpers.RecordRunItem;
+import letshangllc.letsride.helpers.StopWatch;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
 

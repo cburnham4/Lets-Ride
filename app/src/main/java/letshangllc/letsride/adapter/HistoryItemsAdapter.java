@@ -14,7 +14,7 @@ import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
-import letshangllc.letsride.objects.StopWatch;
+import letshangllc.letsride.helpers.StopWatch;
 
 /**
  * Created by cvburnha on 11/3/2015.

@@ -9,14 +9,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Locale;
 
 import letshangllc.letsride.R;
-import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
-import letshangllc.letsride.objects.RunStatItem;
-import letshangllc.letsride.objects.StopWatch;
+import letshangllc.letsride.helpers.RunStatItem;
 
 /**
  * Created by Carl on 8/13/2016.

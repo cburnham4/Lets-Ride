@@ -1,4 +1,4 @@
-package letshangllc.letsride.objects;
+package letshangllc.letsride.helpers;
 
 /**
  * Created by Carl on 8/13/2016.

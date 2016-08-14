@@ -40,19 +40,6 @@ public class PastRunItem implements Parcelable{
         this.minElevation = minElevation;
     }
 
-    /*
-    public double getDistance(){
-        double km = 0;
-        PastLocation prevLocation;
-        PastLocation pastLocation;
-        for(int i  =1; i <pastLocations.size(); i++){
-            prevLocation = pastLocations.get(i-1);
-            pastLocation = pastLocations.get(i);
-            km+= PastLocation.distance(prevLocation.lat, prevLocation.lon, pastLocation.lat, pastLocation.lon);
-        }
-        return km;
-    }*/
-
     protected PastRunItem(Parcel in) {
         runId = in.readInt();
         dayId = in.readInt();
@@ -90,27 +77,6 @@ public class PastRunItem implements Parcelable{
         }
         return date;
     }
-
-//    protected PastRunItem(Parcel in) {
-//        runId = in.readInt();
-//        dayId = in.readInt();
-//        date = in.readString();
-//        maxSpeed = in.readDouble();
-//        durationInMilli = in.readDouble();
-//
-//    }
-
-//    public static final Creator<PastRunItem> CREATOR = new Creator<PastRunItem>() {
-//        @Override
-//        public PastRunItem createFromParcel(Parcel in) {
-//            return new PastRunItem(in);
-//        }
-//
-//        @Override
-//        public PastRunItem[] newArray(int size) {
-//            return new PastRunItem[size];
-//        }
-//    };
 
     @Override
     public int describeContents() {

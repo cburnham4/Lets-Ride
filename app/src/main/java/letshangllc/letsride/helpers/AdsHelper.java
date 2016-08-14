@@ -1,4 +1,4 @@
-package letshangllc.letsride.objects;
+package letshangllc.letsride.helpers;
 
 import android.app.Activity;
 import android.os.Handler;

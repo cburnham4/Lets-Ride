@@ -21,13 +21,12 @@ import java.util.Date;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
-import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.adapter.RunStatsAdapter;
 import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
-import letshangllc.letsride.objects.RunStatItem;
-import letshangllc.letsride.objects.StopWatch;
+import letshangllc.letsride.helpers.RunStatItem;
+import letshangllc.letsride.helpers.StopWatch;
 
 /**
  * A simple {@link Fragment} subclass.

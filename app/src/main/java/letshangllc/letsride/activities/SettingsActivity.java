@@ -1,17 +1,14 @@
 package letshangllc.letsride.activities;
 
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import letshangllc.letsride.objects.AdsHelper;
+import letshangllc.letsride.helpers.AdsHelper;
 import letshangllc.letsride.R;
 
 public class SettingsActivity extends AppCompatActivity {

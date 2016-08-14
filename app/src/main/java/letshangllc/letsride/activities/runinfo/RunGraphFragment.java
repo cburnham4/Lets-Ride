@@ -13,7 +13,6 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
-import java.util.ArrayList;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
@@ -21,7 +20,6 @@ import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
-import letshangllc.letsride.objects.RunStatItem;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -96,6 +94,16 @@ public class RunGraphFragment extends Fragment {
 
         graphSpeed.addSeries(speedPoints);
         graphElevation.addSeries(elevationPoints);
+
+        graphSpeed.getViewport().setXAxisBoundsManual(true);
+        graphElevation.getViewport().setXAxisBoundsManual(true);
+
+        graphSpeed.getViewport().setMinX(0);
+        graphSpeed.getViewport().setMaxX(pastRunItem.pastLocations.size());
+
+        graphElevation.getViewport().setMinX(0);
+        graphElevation.getViewport().setMaxX(pastRunItem.pastLocations.size());
+
     }
 
     private void getUnits(){
