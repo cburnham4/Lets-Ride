@@ -13,6 +13,7 @@ import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import letshangllc.letsride.R;
@@ -20,6 +21,7 @@ import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
+import letshangllc.letsride.helpers.DataHelper;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -69,6 +71,26 @@ public class RunGraphFragment extends Fragment {
     private void getDatapoints(){
         elevationPoints = new LineGraphSeries<>();
         speedPoints = new LineGraphSeries<>();
+
+        /* TODO: Smooth data set and remove outliers */
+//        ArrayList<Double> elevations = new ArrayList<>();
+//        ArrayList<Double> speeds = new ArrayList<>();
+//        for(PastLocation pastLocation : pastRunItem.pastLocations){
+//            elevations.add(pastLocation.elevation);
+//            speeds.add(pastLocation.speed);
+//        }
+//
+//        ArrayList<Double> normalSpeeds = DataHelper.getNormalDataSet(speeds);
+//        ArrayList<Double> normalElevations = DataHelper.getNormalDataSet(elevations);
+//
+//        int i = 0;
+//        for (; i <normalElevations.size() && i <normalSpeeds.size(); i++){
+//            elevationPoints.appendData(new DataPoint(i+1,
+//                    normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
+//            speedPoints.appendData(new DataPoint(i+1,
+//                    normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+//        }
+
         int x =1;
         for(PastLocation pastLocation : pastRunItem.pastLocations){
             elevationPoints.appendData(new DataPoint(x,

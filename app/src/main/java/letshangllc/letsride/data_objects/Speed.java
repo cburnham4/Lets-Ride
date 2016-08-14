@@ -58,19 +58,21 @@ public class Speed {
     /* Return the average speed but after removing suspected outliers */
     public double getAverageWithoutOutliers()
     {
-        if (allSpeeds.size() == 0)
+        if (allSpeeds.size() <= 1)
             return 0;
 
         /* Update Normal speeds whenever an average is needed */
         normalSpeeds = new ArrayList<>();
         outlierSpeeds = new ArrayList<Double>();
-        double avg = getAverageAllSpeed();
+        double previousSpeed = allSpeeds.get(0);
         double standardDeviation = standardDeviation();
-        for(Double speed: allSpeeds){
-            if ((Math.abs(speed - avg)) > (2 * standardDeviation))
+        for(int i = 1; i < allSpeeds.size(); i++){
+            double speed = allSpeeds.get(i);
+            if ((Math.abs(speed - previousSpeed)) > (2 * standardDeviation))
                 outlierSpeeds.add(speed);
             else
                 normalSpeeds.add(speed);
+            previousSpeed = speed;
         }
 
         return getAverageFromList(normalSpeeds);
