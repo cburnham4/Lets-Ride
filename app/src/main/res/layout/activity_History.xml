@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_above="@+id/ad_layout">
+        android:layout_above="@+id/btnTrackActivity">
 
         <include layout="@layout/toolbar"/>
 
@@ -22,15 +22,16 @@
             />
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="wrap_content"
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/fabGoToRecord"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_add_white_48dp"/>
+        android:layout_above="@+id/ad_layout"
+        android:id="@+id/btnTrackActivity"
+        android:text="@string/track_activity"
+        android:textColor="@color/white"
+        android:background="@drawable/btn_track_bg"
+        android:layout_marginLeft="@dimen/btn_horizontal_margin"
+        android:layout_marginRight="@dimen/btn_horizontal_margin"/>
 
     <include layout="@layout/ad_layout"/>
 

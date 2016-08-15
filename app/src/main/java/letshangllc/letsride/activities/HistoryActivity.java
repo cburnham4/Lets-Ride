@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -148,9 +149,9 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     }
 
     private void findViews(){
-        FloatingActionButton floatingActionButton = (FloatingActionButton) findViewById(R.id.fabGoToRecord);
+        Button btnStartTracking = (Button) findViewById(R.id.btnTrackActivity);
 
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+        btnStartTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(HistoryActivity.this, RecordRunActivity.class);

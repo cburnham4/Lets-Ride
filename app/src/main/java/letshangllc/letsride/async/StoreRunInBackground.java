@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import letshangllc.letsride.data.DBTableConstants;
 import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.data_objects.PastLocation;
-import letshangllc.letsride.helpers.RecordRunItem;
+import letshangllc.letsride.data_objects.RecordRunItem;
 
 /**
  * Created by Carl on 8/8/2016.

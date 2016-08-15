@@ -34,7 +34,7 @@ import letshangllc.letsride.data.LocationDatabaseHelper;
 import letshangllc.letsride.async.StoreRunInBackground;
 import letshangllc.letsride.data_objects.Elevation;
 import letshangllc.letsride.data_objects.Speed;
-import letshangllc.letsride.helpers.RecordRunItem;
+import letshangllc.letsride.data_objects.RecordRunItem;
 import letshangllc.letsride.helpers.StopWatch;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
@@ -48,7 +48,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private boolean locationPermissionsEnabled;
 
     // The minimum distance to change updates in metters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 4.0;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 3.0;
 
     // The minimum time beetwen updates in milliseconds
     private long MIN_TIME_BW_UPDATES = 3000;

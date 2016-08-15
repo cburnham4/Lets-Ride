@@ -6,6 +6,8 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
+import letshangllc.letsride.helpers.DataHelper;
+
 /**
  * Created by Carl on 8/5/2016.
  * All Speeds are to be recorded and saved as Meters per seconds
@@ -42,7 +44,7 @@ public class Speed {
     private double getAverageFromList(ArrayList<Double> speeds){
         double count = 0;
         double sum = 0;
-        for(Double speed: allSpeeds){
+        for(Double speed: speeds){
             /* Do not count speeds of 0  in average */
             if(speed > 0){
                 count++;
@@ -54,6 +56,8 @@ public class Speed {
         }
         return sum/count;
     }
+
+
 
     /* Return the average speed but after removing suspected outliers */
     public double getAverageWithoutOutliers()
@@ -68,7 +72,7 @@ public class Speed {
         double standardDeviation = standardDeviation();
         for(int i = 1; i < allSpeeds.size(); i++){
             double speed = allSpeeds.get(i);
-            if ((Math.abs(speed - previousSpeed)) > (2 * standardDeviation))
+            if ((Math.abs(speed - DataHelper.getSurroundingAverage(allSpeeds,i))) > (2 * standardDeviation))
                 outlierSpeeds.add(speed);
             else
                 normalSpeeds.add(speed);
@@ -96,12 +100,21 @@ public class Speed {
     /* Get max from the normal speeds */
     public double getMaxSpeeds(){
         double max = -1;
+        for(Double speed: allSpeeds){
+            /* Do not count speeds of 0 in average */
+            if(max < speed){
+                max = speed;
+            }
+        }
+        Log.i(TAG, "max all "+ max );
+        max = -1;
         for(Double speed: normalSpeeds){
             /* Do not count speeds of 0 in average */
             if(max < speed){
                 max = speed;
             }
         }
+        Log.i(TAG, "max normal "+ max );
         return max==-1 ? 0 : max;
     }
 }

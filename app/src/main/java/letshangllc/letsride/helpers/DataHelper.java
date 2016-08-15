@@ -20,7 +20,7 @@ public final class DataHelper {
         double standardDeviation = standardDeviation(values);
         for(int i = 1; i < values.size(); i++){
             double speed = values.get(i);
-            if ((Math.abs(speed - previousValue)) > (2 * standardDeviation))
+            if ((Math.abs(speed - getSurroundingAverage(values,i))) > (2 * standardDeviation))
                 outliers.add(speed);
             else
                 normal.add(speed);
@@ -28,6 +28,25 @@ public final class DataHelper {
         }
 
         return normal;
+    }
+
+    public static double getSurroundingAverage(ArrayList<Double> values, int index){
+        int size = values.size();
+        int difference = size-index;
+        int start = index -5;
+        int end = index+5;
+        if(index <= 4){
+            start = 0;
+        }
+        if(difference <= 5){
+            end = index + difference -1;
+        }
+        double sum = 0;
+        double count  = 0;
+        for(int i = start ;i <= size && i>=0 && i<=end ; i++, count++){
+            sum += values.get(i);
+        }
+        return sum/count;
     }
 
     /* Get standard deviation of speeds */

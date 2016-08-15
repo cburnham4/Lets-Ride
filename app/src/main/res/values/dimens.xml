@@ -27,6 +27,7 @@
     <dimen name="rv_top_text_sz">18sp</dimen>
     <dimen name="rv_secondary_text_sz">16sp</dimen>
     <dimen name="rv_text_padding">4dp</dimen>
+    <dimen name="btn_horizontal_margin">16dp</dimen>
 
     <!-- Run stat -->
     <dimen name="stat_icon_padding">16dp</dimen>

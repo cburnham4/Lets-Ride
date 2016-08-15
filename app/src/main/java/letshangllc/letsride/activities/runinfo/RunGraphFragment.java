@@ -73,32 +73,32 @@ public class RunGraphFragment extends Fragment {
         speedPoints = new LineGraphSeries<>();
 
         /* TODO: Smooth data set and remove outliers */
-//        ArrayList<Double> elevations = new ArrayList<>();
-//        ArrayList<Double> speeds = new ArrayList<>();
-//        for(PastLocation pastLocation : pastRunItem.pastLocations){
-//            elevations.add(pastLocation.elevation);
-//            speeds.add(pastLocation.speed);
-//        }
-//
-//        ArrayList<Double> normalSpeeds = DataHelper.getNormalDataSet(speeds);
-//        ArrayList<Double> normalElevations = DataHelper.getNormalDataSet(elevations);
-//
-//        int i = 0;
-//        for (; i <normalElevations.size() && i <normalSpeeds.size(); i++){
-//            elevationPoints.appendData(new DataPoint(i+1,
-//                    normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
-//            speedPoints.appendData(new DataPoint(i+1,
-//                    normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
-//        }
-
-        int x =1;
+        ArrayList<Double> elevations = new ArrayList<>();
+        ArrayList<Double> speeds = new ArrayList<>();
         for(PastLocation pastLocation : pastRunItem.pastLocations){
-            elevationPoints.appendData(new DataPoint(x,
-                    pastLocation.elevation * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
-            speedPoints.appendData(new DataPoint(x,
-                    pastLocation.speed * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
-            x++;
+            elevations.add(pastLocation.elevation);
+            speeds.add(pastLocation.speed);
         }
+
+        ArrayList<Double> normalSpeeds = DataHelper.getNormalDataSet(speeds);
+        ArrayList<Double> normalElevations = DataHelper.getNormalDataSet(elevations);
+
+        int i = 0;
+        for (; i <normalElevations.size() && i <normalSpeeds.size(); i++){
+            elevationPoints.appendData(new DataPoint(i+1,
+                    normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
+            speedPoints.appendData(new DataPoint(i+1,
+                    normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+        }
+
+//        int x =1;
+//        for(PastLocation pastLocation : pastRunItem.pastLocations){
+//            elevationPoints.appendData(new DataPoint(x,
+//                    pastLocation.elevation * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
+//            speedPoints.appendData(new DataPoint(x,
+//                    pastLocation.speed * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+//            x++;
+//        }
     }
 
     private void setupGraphs(View rootView){
