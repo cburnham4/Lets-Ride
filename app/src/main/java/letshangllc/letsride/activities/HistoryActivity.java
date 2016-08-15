@@ -39,8 +39,9 @@ import letshangllc.letsride.enums.SpeedUnits;
 public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
-    /* SEtting intent request */
+    /* Intent requests */
     private final static int SETTING_REQUEST = 10;
+    private final static int RECORD_TRACKER = 11;
 
     /* Recycleview items */
     private ArrayList<PastRunItem> pastRunItems;
@@ -59,6 +60,8 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         this.setupToolbar();
         this.getDay();
         this.findViews();
+        this.getRunData();
+        this.setupRecycleView();
     }
 
     private void setupToolbar(){
@@ -231,18 +234,18 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == SETTING_REQUEST){
-            /* TODO: Change amounts when returned */
-            Log.i(TAG, "Returned from settings ");
-            HistoryActivity.this.setupRecycleView();
+        switch (requestCode){
+            case SETTING_REQUEST:
+
+                Log.i(TAG, "Returned from settings ");
+                HistoryActivity.this.setupRecycleView();
+                break;
+            case RECORD_TRACKER:
+                /* TODO: Change to get just the last item */
+                this.getRunData();
+                this.setupRecycleView();
+                break;
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        /* TODO Structure these to only do it when coming from certain activities */
-        this.getRunData();
-        this.setupRecycleView();
-    }
 }

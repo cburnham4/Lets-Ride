@@ -88,7 +88,7 @@ public class RunStatsFragment extends Fragment {
     }
 
     private void addSpeeds(){
-        String maxSpeed = String.format(Locale.getDefault(), "%.1s %s",
+        String maxSpeed = String.format(Locale.getDefault(), "%.1f %s",
                 pastRunItem.maxSpeed * speedUnits.multiplier, speedUnits.label);
         String avgSpeed = String.format(Locale.getDefault(), "%.1f %s",
                 pastRunItem.avgSpeed * speedUnits.multiplier, speedUnits.label);
