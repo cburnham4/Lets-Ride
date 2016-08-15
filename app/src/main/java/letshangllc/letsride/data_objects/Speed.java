@@ -70,6 +70,7 @@ public class Speed {
         outlierSpeeds = new ArrayList<Double>();
         double previousSpeed = allSpeeds.get(0);
         double standardDeviation = standardDeviation();
+        Log.i(TAG, "Standard Deviation "+ standardDeviation );
         for(int i = 1; i < allSpeeds.size(); i++){
             double speed = allSpeeds.get(i);
             if ((Math.abs(speed - DataHelper.getSurroundingAverage(allSpeeds,i))) > (2 * standardDeviation))
@@ -108,6 +109,8 @@ public class Speed {
         }
         Log.i(TAG, "max all "+ max );
         max = -1;
+
+        Log.i(TAG, "Speed length "+ normalSpeeds.size() );
         for(Double speed: normalSpeeds){
             /* Do not count speeds of 0 in average */
             if(max < speed){

@@ -42,6 +42,9 @@ public class RunGraphFragment extends Fragment {
     private LineGraphSeries<DataPoint> speedPoints;
     private LineGraphSeries<DataPoint> elevationPoints;
 
+    private ArrayList<Double> normalSpeeds;
+    private ArrayList<Double> normalElevations;
+
 
 
     public RunGraphFragment() {
@@ -61,10 +64,6 @@ public class RunGraphFragment extends Fragment {
         this.getDatapoints();
         this.setupGraphs(rootView);
 
-
-
-
-
         return rootView;
     }
 
@@ -80,8 +79,8 @@ public class RunGraphFragment extends Fragment {
             speeds.add(pastLocation.speed);
         }
 
-        ArrayList<Double> normalSpeeds = DataHelper.getNormalDataSet(speeds);
-        ArrayList<Double> normalElevations = DataHelper.getNormalDataSet(elevations);
+        normalSpeeds = DataHelper.getNormalDataSet(speeds);
+        normalElevations = DataHelper.getNormalDataSet(elevations);
 
         int i = 0;
         for (; i <normalElevations.size() && i <normalSpeeds.size(); i++){
@@ -121,10 +120,10 @@ public class RunGraphFragment extends Fragment {
         graphElevation.getViewport().setXAxisBoundsManual(true);
 
         graphSpeed.getViewport().setMinX(0);
-        graphSpeed.getViewport().setMaxX(pastRunItem.pastLocations.size());
+        graphSpeed.getViewport().setMaxX(normalSpeeds.size());
 
         graphElevation.getViewport().setMinX(0);
-        graphElevation.getViewport().setMaxX(pastRunItem.pastLocations.size());
+        graphElevation.getViewport().setMaxX(normalElevations.size());
 
     }
 

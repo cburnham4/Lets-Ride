@@ -1,11 +1,16 @@
 package letshangllc.letsride.data_objects;
 
+import android.util.Log;
+
 import java.util.ArrayList;
+
+import letshangllc.letsride.helpers.DataHelper;
 
 /**
  * Created by Carl on 8/6/2016.
  */
 public class Elevation {
+    private static final String TAG = Elevation.class.getSimpleName();
     public ArrayList<Double> allElevations;
     public ArrayList<Double> normalElevations;
     public ArrayList<Double> outlierElevations;
@@ -33,8 +38,10 @@ public class Elevation {
     }
 
     public double getMaxElevation(){
-        double max = -1;
-        for(Double elevation: allElevations){
+        normalElevations = DataHelper.getNormalDataSet(allElevations);
+        Log.i(TAG, "Normal Elevations: " + normalElevations.size());
+        double max = 0;
+        for(Double elevation: normalElevations){
             if (max < elevation){
                 max = elevation;
             }
@@ -47,7 +54,7 @@ public class Elevation {
             return 0;
         }
         double min = Double.MAX_VALUE;
-        for(Double elevation: allElevations){
+        for(Double elevation: normalElevations){
             if (min > elevation && elevation != 0){
                 min = elevation;
             }

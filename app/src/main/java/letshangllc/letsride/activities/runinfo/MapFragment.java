@@ -69,7 +69,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             PastLocation startLocation = pastRunItem.pastLocations.get(0);
             PastLocation endLocation = pastRunItem.pastLocations.get(pastRunItem.pastLocations.size()-1);
             LatLng start = new LatLng(startLocation.lat, startLocation.lon);
-            LatLng end = new LatLng(endLocation.lat, startLocation.lon);
+            LatLng end = new LatLng(endLocation.lat, endLocation.lon);
 
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(start, 15));
 

@@ -306,7 +306,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
 
 
-            elevation.createOutliers();
+            //elevation.createOutliers();
             /* Do nothing if elivation is 0 because it is not accurate */
             if (currentElevation != 0){
                 tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
