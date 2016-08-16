@@ -1,18 +1,21 @@
 package letshangllc.letsride.activities;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.location.LocationProvider;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -48,7 +51,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private boolean locationPermissionsEnabled;
 
     // The minimum distance to change updates in metters
-    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 3.0;
+    private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 3;
 
     // The minimum time beetwen updates in milliseconds
     private long MIN_TIME_BW_UPDATES = 3000;
@@ -91,7 +94,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_run);
 
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_record), this);
 
         adsHelper.setUpAds();
 
@@ -132,11 +135,30 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    stopRecording();
-                    finish();
+                    confirmDiscard();
                 }
             });
         }
+    }
+
+    public void confirmDiscard(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.confirm_discard));
+
+        builder.setPositiveButton(getString(R.string.discard), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                stopRecording();
+                finish();
+            }
+        }).setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     /* Make sure the user has location permissions enabled */
@@ -247,7 +269,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             handler.post(updateTimer);
             if(recordRunItem.startTime == 0){
                 recordRunItem.startTime = System.currentTimeMillis();
-                Log.i(TAG, "startTim = " + recordRunItem.startTime);
             }
         } else{
             if(!locationEnabled){
@@ -381,7 +402,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         fabStopRecording.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /* TODO: Store Data */
                 fabStopRecording.setVisibility(View.GONE);
                 stopRecording();
                 recordRunItem.duration = stopWatch.getElapsedTime();
@@ -402,6 +422,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         });
     }
 
+    /* TODO Test out different  ways to make smoother */
     public Runnable updateTimer = new Runnable() {
         public void run() {
             /* Remove callbacks on stop */
@@ -422,7 +443,9 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     /* Unused Location Listener functions */
     @Override
     public void onStatusChanged(String s, int i, Bundle bundle) {
-
+        if(i == LocationProvider.OUT_OF_SERVICE){
+            Toast.makeText(this, "GPS Tracking is not available", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override

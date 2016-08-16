@@ -23,6 +23,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import letshangllc.letsride.R;
 
@@ -35,6 +37,7 @@ import letshangllc.letsride.data_objects.PastLocation;
 import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
+import letshangllc.letsride.helpers.AdsHelper;
 
 public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
@@ -62,6 +65,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         this.findViews();
         this.getRunData();
         this.setupRecycleView();
+        this.runAds();
     }
 
     private void setupToolbar(){
@@ -246,6 +250,21 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 this.setupRecycleView();
                 break;
         }
+    }
+
+    private AdsHelper adsHelper;
+    public void runAds(){
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_id_history), this);
+
+        adsHelper.setUpAds();
+        int delay = 1000; // delay for 1 sec.
+        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                adsHelper.refreshAd();  // display the data
+            }
+        }, delay, period);
     }
 
 }

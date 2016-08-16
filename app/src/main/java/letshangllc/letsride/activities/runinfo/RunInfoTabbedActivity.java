@@ -12,9 +12,12 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import letshangllc.letsride.R;
 import letshangllc.letsride.data_objects.PastRunItem;
+import letshangllc.letsride.helpers.AdsHelper;
 
 public class RunInfoTabbedActivity extends AppCompatActivity {
     private Bundle args;
@@ -47,6 +50,8 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_map_location);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_assignment_white_36dp);
         tabLayout.getTabAt(2).setIcon(R.drawable.ic_assessment_white_36dp);
+
+        //this.runAds();
     }
 
 
@@ -96,5 +101,20 @@ public class RunInfoTabbedActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return null;
         }
+    }
+
+    private AdsHelper adsHelper;
+    public void runAds(){
+        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_id_history), this);
+
+        adsHelper.setUpAds();
+        int delay = 1000; // delay for 1 sec.
+        int period = getResources().getInteger(R.integer.ad_refresh_rate);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                adsHelper.refreshAd();  // display the data
+            }
+        }, delay, period);
     }
 }
