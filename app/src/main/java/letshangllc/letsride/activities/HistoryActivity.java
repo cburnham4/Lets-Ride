@@ -59,6 +59,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
 
+        /* Call Private Methods */
         this.setupToolbar();
         this.getDay();
         this.findViews();
@@ -67,13 +68,14 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         this.runAds();
     }
 
+    /* Setup Toolbar */
     private void setupToolbar(){
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
+    /* Get all the previous run data */
     private void getRunData(){
-        pastRunItems = new ArrayList<>();
         String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
             + DBTableConstants.RUNS_TABLE + " ON " +
             DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
@@ -97,6 +99,10 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             db.close();
             return;
         }
+
+        pastRunItems = new ArrayList<>();
+
+        /* Create variables */
         int prevRunId = -1;
         PastRunItem pastRunItem = null;
         String date;
@@ -104,9 +110,10 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         long startTime;
 
 
-
+        /* Iterate throught the cursor to get the runs */
         while(!c.isAfterLast()){
             int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
+            /* If it is a new runId then add all the run Id to that run */
             if(runId != prevRunId){
                 prevRunId = runId;
                 date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
@@ -123,6 +130,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 pastRunItems.add(pastRunItem);
             }
 
+            /* Add the locations, speed and elevation to the current run */
             double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
             double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
             double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
@@ -135,6 +143,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         db.close();
     }
 
+    /* Get the most recent run */
     private void getRecentRun(){
        // String sqlGetRun = "SELECT MAX("+DBTableConstants.RUN_ID
         String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
@@ -158,29 +167,29 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             return;
         }
 
+        /* Get the current date since we know the most current run would be today */
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format), Locale.US);
         Date date = new Date();
         String currentDate = dateFormat.format(date);
 
-        int prevRunId = -1;
         PastRunItem pastRunItem = null;
-        double duration, distance, maxSpeed, avgSpeed, maxElevation, minElevation;
-        long startTime;
 
+        /* Get all the run information */
         if(!c.isAfterLast()){
             int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
-            duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-            distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
-            maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
-            avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
-            maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
-            minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
-            startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
+            double duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
+            double distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
+            double maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
+            double avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
+            double maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
+            double minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
+            long startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
             pastRunItem = new PastRunItem(runId, dayId, currentDate, duration, distance, startTime, maxSpeed, avgSpeed,
                     maxElevation, minElevation);
             pastRunItems.add(pastRunItem);
         }
 
+        /* Add all the location information for that run */
         while(!c.isAfterLast()){
             double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
             double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));

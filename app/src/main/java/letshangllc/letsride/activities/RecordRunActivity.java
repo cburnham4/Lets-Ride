@@ -27,7 +27,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import letshangllc.letsride.async.CalculateDistanceAsync;
+import letshangllc.letsride.async.CalculateRunStatsAsync;
 import letshangllc.letsride.async.RunCaclulationsListener;
 import letshangllc.letsride.async.StoringDataComplete;
 import letshangllc.letsride.data_objects.PastLocation;
@@ -87,7 +87,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private int dayId;
 
     /* Async calculator */
-    private CalculateDistanceAsync calculateDistanceAsync;
+    private CalculateRunStatsAsync calculateRunStatsAsync;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,7 +104,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         this.setupViews();
         this.requestPermission();
         this.requestLocationEnabled();
-        this.runAds();
+        //this.runAds();
     }
 
     private void getUserData(){
@@ -148,6 +148,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 setResult(RESULT_CANCELED);
+                dialog.cancel();
                 stopRecording();
                 finish();
             }
@@ -313,7 +314,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         if(location!= null){
             /* TODO: Fix max speeds and elevations */
             double currentSpeed = location.getSpeed();
-            double currentElevation = location.getAltitude();
+            final double currentElevation = location.getAltitude();
 
             /* Add Speeds and Elevations */
             speed.allSpeeds.add(currentSpeed);
@@ -321,42 +322,43 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
             /* Convert speed and elevations to perferred units */
             double speedInUnits = currentSpeed * speedUnits.multiplier;
-            double elivationInUnits = currentElevation * elevationUnits.multiplier;
+            final double elivationInUnits = currentElevation * elevationUnits.multiplier;
 
             tvCurrentSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedInUnits));
-            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getAverageWithoutOutliers()
-                    * speedUnits.multiplier));
 
-            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f", speed.getMaxSpeeds() * speedUnits.multiplier));
-
-
-            //elevation.createOutliers();
-            /* Do nothing if elivation is 0 because it is not accurate */
-            if (currentElevation != 0){
-                tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
-
-                tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                        elevation.getMaxElevation() * elevationUnits.multiplier));
-
-                double minElevation =  elevation.getMinElevation();
-                if(minElevation != 0){
-                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
-                            minElevation * elevationUnits.multiplier));
-                }
-
-            }
             pastLocations.add(new PastLocation(location.getLatitude(), location.getLongitude(),
                     currentSpeed, currentElevation));
 
             /* Async class to calculate distance */
             double currentDistance = recordRunItem.distance;
-            new CalculateDistanceAsync(pastLocations, distanceUnits, tvDistance, currentDistance,
+            new CalculateRunStatsAsync(pastLocations, currentDistance, speed, elevation,
                     new RunCaclulationsListener() {
                         @Override
-                        public void onCalculationsComplete(double distanceInMeters) {
+                        public void onCalculationsComplete(double distanceInMeters , double speedAvg,
+                                                           double maxSpeed, double maxElevation,
+                                                           double minElevation) {
                             tvDistance.setText(String.format(Locale.getDefault(), "%.1f",
                                     distanceInMeters * distanceUnits.multiplier));
                             recordRunItem.distance = distanceInMeters;
+
+                            tvAvgSpeed.setText(String.format(Locale.getDefault(), "%.2f", speedAvg
+                                    * speedUnits.multiplier));
+
+                            tvMaxSpeed.setText(String.format(Locale.getDefault(), "%.2f",
+                                    maxSpeed * speedUnits.multiplier));
+
+                            if (currentElevation != 0){
+                                tvCurrentElevation.setText(String.format(Locale.getDefault(), "%.1f", elivationInUnits));
+
+                                tvMaxElevation.setText(String.format(Locale.getDefault(), "%.1f",
+                                        maxElevation * elevationUnits.multiplier));
+
+                                if(minElevation != 0){
+                                    tvMinElevation.setText(String.format(Locale.getDefault(), "%.1f",
+                                            minElevation * elevationUnits.multiplier));
+                                }
+
+                            }
                         }
                     }).execute();
         }
