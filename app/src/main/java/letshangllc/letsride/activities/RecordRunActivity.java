@@ -129,7 +129,6 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         setSupportActionBar(toolbar);
 
         if(toolbar != null){
-            /* Todo add confirmation dialog */
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -148,6 +147,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         builder.setPositiveButton(getString(R.string.discard), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                setResult(RESULT_CANCELED);
                 stopRecording();
                 finish();
             }
@@ -240,18 +240,21 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                     locationManager.requestLocationUpdates(
                             LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
 
                 } else if (isNetworkEnabled) {
                     locationManager.requestLocationUpdates(
                             LocationManager.NETWORK_PROVIDER,
                             MIN_TIME_BW_UPDATES,
                             MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
                 } else{
                     Toast.makeText(this, "Enable Location Services", Toast.LENGTH_LONG).show();
                 }
 
 
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             Log.e("Error : Location",
@@ -415,6 +418,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
                             @Override
                             public void onDataStored() {
                                 Log.i(TAG, "Data Stored");
+                                setResult(RESULT_OK);
                                 finish();
                             }
                         }).execute();

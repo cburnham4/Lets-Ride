@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,7 +43,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
     /* Intent requests */
     private final static int SETTING_REQUEST = 10;
-    private final static int RECORD_TRACKER = 11;
+    private final static int RECORD_TRACKER_REQUEST = 11;
 
     /* Recycleview items */
     private ArrayList<PastRunItem> pastRunItems;
@@ -104,6 +103,8 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         double duration, distance, maxSpeed, avgSpeed, maxElevation, minElevation;
         long startTime;
 
+
+
         while(!c.isAfterLast()){
             int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
             if(runId != prevRunId){
@@ -127,6 +128,65 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
             double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
             pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
+
+            c.moveToNext();
+        }
+        c.close();
+        db.close();
+    }
+
+    private void getRecentRun(){
+       // String sqlGetRun = "SELECT MAX("+DBTableConstants.RUN_ID
+        String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
+                + DBTableConstants.RUNS_TABLE + " ON " +
+                DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
+                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
+
+                " WHERE " +DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID + " = " +
+                    "(SELECT MAX(" +DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +")"+
+                    "FROM " + DBTableConstants.RUNS_TABLE +" ) ";
+
+        SQLiteDatabase db = databaseHelper.getReadableDatabase();
+
+        /* Run the query */
+        Cursor c = db.rawQuery(sql, null);
+        c.moveToFirst();
+
+        if(c.getCount() == 0){
+            c.close();
+            db.close();
+            return;
+        }
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format), Locale.US);
+        Date date = new Date();
+        String currentDate = dateFormat.format(date);
+
+        int prevRunId = -1;
+        PastRunItem pastRunItem = null;
+        double duration, distance, maxSpeed, avgSpeed, maxElevation, minElevation;
+        long startTime;
+
+        if(!c.isAfterLast()){
+            int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
+            duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
+            distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
+            maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
+            avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
+            maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
+            minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
+            startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
+            pastRunItem = new PastRunItem(runId, dayId, currentDate, duration, distance, startTime, maxSpeed, avgSpeed,
+                    maxElevation, minElevation);
+            pastRunItems.add(pastRunItem);
+        }
+
+        while(!c.isAfterLast()){
+            double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
+            double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
+            double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
+            double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
+            pastRunItem.pastLocations.add(0, new PastLocation(lat, lon, speed, elevation));
 
             c.moveToNext();
         }
@@ -163,7 +223,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             public void onClick(View view) {
                 Intent intent = new Intent(HistoryActivity.this, RecordRunActivity.class);
                 intent.putExtra(getString(R.string.day_id_extra), dayId);
-                startActivity(intent);
+                startActivityForResult(intent, RECORD_TRACKER_REQUEST);
             }
         });
     }
@@ -244,10 +304,16 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 Log.i(TAG, "Returned from settings ");
                 HistoryActivity.this.setupRecycleView();
                 break;
-            case RECORD_TRACKER:
-                /* TODO: Change to get just the last item */
-                this.getRunData();
-                this.setupRecycleView();
+            case RECORD_TRACKER_REQUEST:
+                if(resultCode == RESULT_CANCELED){
+                    Log.i(TAG, "Result Canceled");
+                }
+                if(resultCode == RESULT_OK){
+                    Log.i(TAG, "Result Ok");
+                    /* Get just the most recent Run */
+                    this.getRecentRun();
+                    HistoryActivity.this.setupRecycleView();
+                }
                 break;
         }
     }
