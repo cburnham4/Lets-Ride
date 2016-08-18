@@ -312,7 +312,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     public void onLocationChanged(Location location) {
         Log.i(TAG, "Location Updated");
         if(location!= null){
-            /* TODO: Fix max speeds and elevations */
+
             double currentSpeed = location.getSpeed();
             final double currentElevation = location.getAltitude();
 

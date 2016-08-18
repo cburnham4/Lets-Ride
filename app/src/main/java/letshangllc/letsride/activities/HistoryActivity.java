@@ -16,7 +16,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -233,6 +236,27 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 Intent intent = new Intent(HistoryActivity.this, RecordRunActivity.class);
                 intent.putExtra(getString(R.string.day_id_extra), dayId);
                 startActivityForResult(intent, RECORD_TRACKER_REQUEST);
+            }
+        });
+
+        Spinner spinner = (Spinner) findViewById(R.id.spinHistorySelection);
+// Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.history_times, R.layout.item_spinner);
+// Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+// Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }

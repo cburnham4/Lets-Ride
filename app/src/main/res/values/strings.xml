@@ -9,6 +9,13 @@
     <string name="history">History</string>
     <string name="track_activity">Track Activity</string>
 
+    <string-array name="history_times">
+        <item>Week</item>
+        <item>Month</item>
+        <item>Year</item>
+        <item>All</item>
+    </string-array>
+
     <!-- Main Activity Labels -->
     <string name="record_activity">Track Ride</string>
     <string name="max_speed">MAX SPEED</string>
