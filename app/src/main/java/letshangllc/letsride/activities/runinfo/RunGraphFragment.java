@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import letshangllc.letsride.helpers.DataHelper;
  * A simple {@link Fragment} subclass.
  */
 public class RunGraphFragment extends Fragment {
+    private static final String TAG = RunGraphFragment.class.getSimpleName();
     private PastRunItem pastRunItem;
 
     /* Units */
@@ -60,9 +62,18 @@ public class RunGraphFragment extends Fragment {
 
         Bundle args = getArguments();
         pastRunItem = args.getParcelable(getString(R.string.past_run_item_extra));
-        this.getUnits();
-        this.getDatapoints();
-        this.setupGraphs(rootView);
+
+        if(pastRunItem!= null && pastRunItem.pastLocations.size()>=2){
+            this.getUnits();
+            this.getDatapoints();
+            Log.i(TAG, "normal size: " + normalElevations.size());
+            Log.i(TAG, "speed size: " + normalSpeeds.size());
+            if(normalElevations.size() >= 2 && normalSpeeds.size() >= 2){
+                this.setupGraphs(rootView);
+            }
+
+        }
+
 
         return rootView;
     }

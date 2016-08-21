@@ -49,7 +49,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         Log.i(TAG, "On Create");
         Bundle args = getArguments();
         pastRunItem = args.getParcelable(getString(R.string.past_run_item_extra));
-//        mMapView = (MapView) rootView.findViewById(R.id.mapView);
+        mMapView = (MapView) rootView.findViewById(R.id.mapView);
 //        mMapView.onCreate(savedInstanceState);
 //
 //        mMapView.onResume(); // needed to get the map to display immediately
@@ -112,5 +112,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         return rectOptions;
     }
+
+
 
 }
