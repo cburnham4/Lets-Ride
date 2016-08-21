@@ -37,6 +37,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Required empty public constructor
     }
 
+    /* TODO: Add no data available */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

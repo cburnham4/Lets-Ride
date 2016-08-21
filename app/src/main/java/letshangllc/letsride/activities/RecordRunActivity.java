@@ -217,6 +217,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         }
     }
 
+    /* TODO: Add save function */
     /**
      * Function to show settings alert dialog
      * */
