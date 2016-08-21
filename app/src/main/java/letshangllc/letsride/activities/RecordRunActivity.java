@@ -208,9 +208,46 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
             Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(intent);
+        }else if(!isGPSEnabled){
+            /* Network is enabled but not the gps */
+            showSettingsAlert("GPS Disabled");
+            locationEnabled = true;
         } else{
             locationEnabled = true;
         }
+    }
+
+    /**
+     * Function to show settings alert dialog
+     * */
+    public void showSettingsAlert(String title){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle(title);
+
+        // Setting Dialog Message
+        alertDialog.setMessage("Would you like to change your settings?");
+        // Setting Icon to Dialog
+        //alertDialog.setIcon(R.drawable.delete);
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
     private void startLocationListener() {
