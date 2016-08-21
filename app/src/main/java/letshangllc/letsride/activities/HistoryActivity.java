@@ -200,7 +200,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
             long startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
             pastRunItem = new PastRunItem(runId, dayId, currentDate, duration, distance, startTime, maxSpeed, avgSpeed,
                     maxElevation, minElevation);
-            pastRunItems.add(pastRunItem);
+            pastRunItems.add(0, pastRunItem);
         }
 
         /* Add all the location information for that run */
@@ -213,6 +213,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
             c.moveToNext();
         }
+        historyItemsAdapter.notifyDataSetChanged();
         c.close();
         db.close();
     }
@@ -356,7 +357,7 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                     Log.i(TAG, "Result Ok");
                     /* Get just the most recent Run */
                     this.getRecentRun();
-                    HistoryActivity.this.setupRecycleView();
+                    //HistoryActivity.this.setupRecycleView();
                 }
                 break;
         }
