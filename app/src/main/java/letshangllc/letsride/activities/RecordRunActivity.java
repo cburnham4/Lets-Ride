@@ -3,16 +3,18 @@ package letshangllc.letsride.activities;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.location.LocationListener;
+
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -23,6 +25,23 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
+import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
+
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStates;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -43,12 +62,11 @@ import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
 
 
-public class RecordRunActivity extends AppCompatActivity implements LocationListener {
+public class RecordRunActivity extends AppCompatActivity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {
     private final static String TAG = RecordRunActivity.class.getSimpleName();
 
     /* Permission Variables */
     private final static int REQUEST_LOCATION_PERMISSIONS = 0;
-    private boolean locationPermissionsEnabled;
 
     // The minimum distance to change updates in metters
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = (long) 3;
@@ -69,8 +87,9 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private Handler handler = new Handler();
 
     /* Location Variables */
-    private LocationManager locationManager;
+    // private LocationManager locationManager;
     private boolean locationEnabled = false;
+    private boolean locationPermissionsEnabled;
 
     /* Units */
     private SpeedUnits speedUnits;
@@ -86,6 +105,10 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
     private LocationDatabaseHelper databaseHelper;
     private int dayId;
 
+    /* Google Locations API */
+    private GoogleApiClient mGoogleApiClient;
+    private LocationRequest mLocationRequest;
+
     /* Async calculator */
     private CalculateRunStatsAsync calculateRunStatsAsync;
 
@@ -94,20 +117,80 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_record_run);
 
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_record), this);
+        adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_record), this);
 
         adsHelper.setUpAds();
 
+        this.setupAPI();
         this.getUserData();
         this.findViews();
         this.setupToolbar();
         this.setupViews();
         this.requestPermission();
-        this.requestLocationEnabled();
-        //this.runAds();
+        //this.requestLocationEnabled();
     }
 
-    private void getUserData(){
+    private void setupAPI() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(1000);
+        mLocationRequest.setFastestInterval(3000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                .addLocationRequest(mLocationRequest);
+
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(mGoogleApiClient,
+                        builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+                final LocationSettingsStates locationSettingsStates = locationSettingsResult.getLocationSettingsStates();
+
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        // All location settings are satisfied. The client can
+                        // initialize location requests here.
+                        locationEnabled = true;
+
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            // Show the dialog by calling startResolutionForResult(),
+                            // and check the result in onActivityResult().
+                            status.startResolutionForResult(
+                                    RecordRunActivity.this,
+                                    REQUEST_LOCATION_PERMISSIONS);
+                        } catch (IntentSender.SendIntentException e) {
+                            // Ignore the error.
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        // Location settings are not satisfied. However, we have no way
+                        // to fix the settings so we won't show the dialog.
+
+                        break;
+                }
+            }
+        });
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+
+    }
+
+    private void getUserData() {
         dayId = getIntent().getExtras().getInt(getString(R.string.day_id_extra), 0);
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         int speedUnitIndex = Integer.parseInt(settings.getString(getString(R.string.user_pref_speed_unit_index), "0"));
@@ -121,14 +204,14 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
         databaseHelper = new LocationDatabaseHelper(this);
 
-        recordRunItem = new RecordRunItem(dayId, 0,0,0,0,0,0,0);
+        recordRunItem = new RecordRunItem(dayId, 0, 0, 0, 0, 0, 0, 0);
     }
 
-    private void setupToolbar(){
+    private void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(toolbar != null){
+        if (toolbar != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_clear_white_24dp);
             toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -140,7 +223,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         }
     }
 
-    public void confirmDiscard(){
+    public void confirmDiscard() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.confirm_discard));
 
@@ -179,49 +262,50 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.i(TAG, "Permission Request Result");
-        if (REQUEST_LOCATION_PERMISSIONS == requestCode) {
-            locationPermissionsEnabled =true;
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        Log.i(TAG, "Permission Request Result");
+//        if (REQUEST_LOCATION_PERMISSIONS == requestCode) {
+//            locationPermissionsEnabled =true;
+//        }
+//    }
 
-    /* Request that location services are enabled */
-    private void requestLocationEnabled(){
-        locationManager = (LocationManager) this
-                .getSystemService(AppCompatActivity.LOCATION_SERVICE);
-
-        // getting GPS status
-        boolean isGPSEnabled = locationManager
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        // getting network status
-        boolean isNetworkEnabled = locationManager
-                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            /* If both are disabled then request location be enabled */
-        if (!isGPSEnabled && !isNetworkEnabled) {
-            // location service disabled
-            Log.i("GPS: ", "Disabled");
-            Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }else if(!isGPSEnabled){
-            /* Network is enabled but not the gps */
-            showSettingsAlert("GPS Disabled");
-            locationEnabled = true;
-        } else{
-            locationEnabled = true;
-        }
-    }
+//    /* Request that location services are enabled */
+//    private void requestLocationEnabled(){
+//        locationManager = (LocationManager) this
+//                .getSystemService(AppCompatActivity.LOCATION_SERVICE);
+//
+//        // getting GPS status
+//        boolean isGPSEnabled = locationManager
+//                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//        // getting network status
+//        boolean isNetworkEnabled = locationManager
+//                .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//
+//            /* If both are disabled then request location be enabled */
+//        if (!isGPSEnabled && !isNetworkEnabled) {
+//            // location service disabled
+//            Log.i("GPS: ", "Disabled");
+//            Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
+//            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//            startActivity(intent);
+//        }else if(!isGPSEnabled){
+//            /* Network is enabled but not the gps */
+//            showSettingsAlert("GPS Disabled");
+//            locationEnabled = true;
+//        } else{
+//            locationEnabled = true;
+//        }
+//    }
 
     /* TODO: Add save function */
+
     /**
      * Function to show settings alert dialog
      * */
-    public void showSettingsAlert(String title){
+    public void showSettingsAlert(String title) {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
 
         // Setting Dialog Title
@@ -234,7 +318,7 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
@@ -251,70 +335,79 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         alertDialog.show();
     }
 
+//    private void startLocationListener() {
+//        Log.i(TAG, "Start Location Listener");
+//        isRecording = true;
+//        try {
+//            // getting GPS status
+//            boolean isGPSEnabled = locationManager
+//                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
+//
+//            // getting network status
+//            boolean isNetworkEnabled = locationManager
+//                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+//
+//            /* If both are disabled then request location be enabled */
+//            if (!isGPSEnabled && !isNetworkEnabled) {
+//                // location service disabled
+//                Log.i("GPS: ", "Disabled");
+//                Toast.makeText(this, "Enable Location Service", Toast.LENGTH_LONG).show();
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                startActivity(intent);
+//            } else {
+//                Log.i(TAG, "Location services are enabled");
+//                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                }
+//
+//                if (isGPSEnabled) {
+//                    locationManager.requestLocationUpdates(
+//                            LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
+//                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+//                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+//
+//                } else if (isNetworkEnabled) {
+//                    locationManager.requestLocationUpdates(
+//                            LocationManager.NETWORK_PROVIDER,
+//                            MIN_TIME_BW_UPDATES,
+//                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
+//                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
+//                } else{
+//                    Toast.makeText(this, "Enable Location Services", Toast.LENGTH_LONG).show();
+//                }
+//
+//
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            Log.e("Error : Location",
+//                    "Impossible to connect to LocationManager", e);
+//        }
+//    }
+
     private void startLocationListener() {
-        Log.i(TAG, "Start Location Listener");
-        isRecording = true;
-        try {
-            // getting GPS status
-            boolean isGPSEnabled = locationManager
-                    .isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-            // getting network status
-            boolean isNetworkEnabled = locationManager
-                    .isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-            /* If both are disabled then request location be enabled */
-            if (!isGPSEnabled && !isNetworkEnabled) {
-                // location service disabled
-                Log.i("GPS: ", "Disabled");
-                Toast.makeText(this, "Enable Location Service", Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            } else {
-                Log.i(TAG, "Location services are enabled");
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                }
-
-                if (isGPSEnabled) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.GPS_PROVIDER, MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-
-                } else if (isNetworkEnabled) {
-                    locationManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER,
-                            MIN_TIME_BW_UPDATES,
-                            MIN_DISTANCE_CHANGE_FOR_UPDATES, this);
-                    onLocationChanged(locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER));
-                } else{
-                    Toast.makeText(this, "Enable Location Services", Toast.LENGTH_LONG).show();
-                }
-
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            Log.e("Error : Location",
-                    "Impossible to connect to LocationManager", e);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
         }
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
     }
-
     private void startRecording(){
         Log.i(TAG, "Start Timer");
         if(locationEnabled && locationPermissionsEnabled){
             startLocationListener();
             /* Start the timer */
             stopWatch.start();
+            isRecording = true;
             /* Start the handler to request times from stopwatch */
+
             handler.post(updateTimer);
             if(recordRunItem.startTime == 0){
                 recordRunItem.startTime = System.currentTimeMillis();
             }
         } else{
             if(!locationEnabled){
-                requestLocationEnabled();
+                //requestLocationEnabled();
             }
             if(!locationPermissionsEnabled){
                 requestPermission();
@@ -329,7 +422,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
             return;
         }
-        locationManager.removeUpdates(this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
 
         stopWatch.stop();
         handler.removeCallbacks(updateTimer);
@@ -343,7 +437,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             Toast.makeText(this, getString(R.string.enable_location_service), Toast.LENGTH_LONG).show();
             return;
         }
-        locationManager.removeUpdates(this);
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
     }
 
     @Override
@@ -466,6 +561,8 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
         });
     }
 
+
+    private AdsHelper adsHelper;
     /* TODO Test out different  ways to make smoother */
     public Runnable updateTimer = new Runnable() {
         public void run() {
@@ -484,36 +581,32 @@ public class RecordRunActivity extends AppCompatActivity implements LocationList
             }
         }};
 
-    /* Unused Location Listener functions */
-    @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-        if(i == LocationProvider.OUT_OF_SERVICE){
-            Toast.makeText(this, "GPS Tracking is not available", Toast.LENGTH_LONG).show();
-        }
-    }
 
     @Override
-    public void onProviderEnabled(String s) {
+    public void onConnected(@Nullable Bundle bundle) {
 
     }
 
     @Override
-    public void onProviderDisabled(String s) {
+    public void onConnectionSuspended(int i) {
 
     }
 
-    private AdsHelper adsHelper;
-    public void runAds(){
-//        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_main), this);
-//
-//        adsHelper.setUpAds();
-//        int delay = 1000; // delay for 1 sec.
-//        int period = getResources().getInteger(R.integer.ad_refresh_rate);
-//        Timer timer = new Timer();
-//        timer.scheduleAtFixedRate(new TimerTask() {
-//            public void run() {
-//                adsHelper.refreshAd();  // display the data
-//            }
-//        }, delay, period);
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+        mGoogleApiClient.disconnect();
+        super.onDestroy();
     }
 }
