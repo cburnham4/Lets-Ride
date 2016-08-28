@@ -52,14 +52,14 @@ public class RunStatsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_run_stats, container, false);
-//
-//        Log.i(TAG, "On Create");
-//        Bundle args = getArguments();
-//        pastRunItem = args.getParcelable(getString(R.string.past_run_item_extra));
-//
-//        getUnits();
-//        createStatItems();
-//        setupRecycleView(rootView);
+
+        Log.i(TAG, "On Create");
+        Bundle args = getArguments();
+        pastRunItem = args.getParcelable(getString(R.string.past_run_item_extra));
+
+        getUnits();
+        createStatItems();
+        setupRecycleView(rootView);
 
         return rootView;
     }
