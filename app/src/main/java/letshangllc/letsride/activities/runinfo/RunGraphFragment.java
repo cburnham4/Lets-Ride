@@ -47,6 +47,8 @@ public class RunGraphFragment extends Fragment {
     private ArrayList<Double> normalSpeeds;
     private ArrayList<Double> normalElevations;
 
+    private int mult;
+
 
 
     public RunGraphFragment() {
@@ -85,23 +87,57 @@ public class RunGraphFragment extends Fragment {
         /* TODO: Smooth data set and remove outliers */
         ArrayList<Double> elevations = new ArrayList<>();
         ArrayList<Double> speeds = new ArrayList<>();
+
+
         for(PastLocation pastLocation : pastRunItem.pastLocations){
             elevations.add(pastLocation.elevation);
             speeds.add(pastLocation.speed);
+
+//            speedPoints.appendData(new DataPoint(i++,
+//                    pastLocation.speed * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
         }
+        int speedCount = speeds.size();
+
 
         normalSpeeds = DataHelper.getNormalDataSet(speeds);
         normalElevations = DataHelper.getNormalDataSet(elevations);
-
-        int i = 0;
-        for (; i <normalElevations.size() && i <normalSpeeds.size(); i++){
-            elevationPoints.appendData(new DataPoint(i+1,
-                    normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
-            speedPoints.appendData(new DataPoint(i+1,
-                    normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+        mult = (int) Math.ceil(speedCount / 500.0);
+        if(mult == 0){
+            mult =1;
         }
 
-//        int x =1;
+        int i = 0;
+
+        for (int count = 0; i <normalElevations.size() && i <normalSpeeds.size(); i++){
+            if(i %mult == 0){
+                elevationPoints.appendData(new DataPoint(count,
+                        normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
+                Log.i(TAG, "Normal Speed: " + normalSpeeds.get(i));
+                Log.i(TAG, "Original Speed: " + speeds.get(i));
+                speedPoints.appendData(new DataPoint(count,
+                        normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+                count++;
+            }
+
+
+        }
+
+        while(i<normalSpeeds.size()){
+            if(i %mult == 0) {
+                speedPoints.appendData(new DataPoint(i,
+                        normalSpeeds.get(i) * speedUnits.multiplier), true, pastRunItem.pastLocations.size());
+            }
+            i++;
+        }
+        while (i<normalElevations.size()){
+            if(i %mult == 0) {
+                elevationPoints.appendData(new DataPoint(i,
+                        normalElevations.get(i) * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
+            }
+            i++;
+        }
+
+//        int x =0;
 //        for(PastLocation pastLocation : pastRunItem.pastLocations){
 //            elevationPoints.appendData(new DataPoint(x,
 //                    pastLocation.elevation * elevationUnits.multiplier), true, pastRunItem.pastLocations.size());
@@ -131,10 +167,10 @@ public class RunGraphFragment extends Fragment {
         graphElevation.getViewport().setXAxisBoundsManual(true);
 
         graphSpeed.getViewport().setMinX(0);
-        graphSpeed.getViewport().setMaxX(normalSpeeds.size());
+        graphSpeed.getViewport().setMaxX((int) Math.ceil(normalSpeeds.size()/mult));
 
         graphElevation.getViewport().setMinX(0);
-        graphElevation.getViewport().setMaxX(normalElevations.size());
+        graphElevation.getViewport().setMaxX((int) Math.ceil(normalElevations.size()/mult));
 
     }
 
