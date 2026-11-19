@@ -1,51 +1,87 @@
 package letshangllc.letsride.activities;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
-import letshangllc.letsride.helpers.AdsHelper;
 import letshangllc.letsride.R;
+import letshangllc.letsride.helpers.AdsHelper;
+import letshangllc.letsride.helpers.EdgeToEdgeHelper;
 
 public class SettingsActivity extends AppCompatActivity {
+    private AdsHelper adsHelper;
+    private Timer adTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        EdgeToEdgeHelper.apply(this);
 
         this.setupToolbar();
         this.runAds();
     }
 
-    private void setupToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(toolbar != null){getSupportActionBar().setDisplayHomeAsUpEnabled(true);}
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        if (toolbar != null && getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                }
+            });
+        }
     }
 
-    private AdsHelper adsHelper;
-    public void runAds(){
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_settings), this);
-
+    public void runAds() {
+        adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_ad_id_settings), this);
         adsHelper.setUpAds();
-        int delay = 1000; // delay for 1 sec.
+        int delay = 1000;
         int period = getResources().getInteger(R.integer.ad_refresh_rate);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        adTimer = new Timer();
+        adTimer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                adsHelper.refreshAd();  // display the data
+                if (adsHelper != null) {
+                    adsHelper.refreshAd();
+                }
             }
         }, delay, period);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adsHelper != null) {
+            adsHelper.onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adsHelper != null) {
+            adsHelper.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adTimer != null) {
+            adTimer.cancel();
+            adTimer = null;
+        }
+        if (adsHelper != null) {
+            adsHelper.onDestroy();
+        }
+        super.onDestroy();
     }
 }

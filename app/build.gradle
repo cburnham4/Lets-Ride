@@ -1,38 +1,104 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+}
+
+// Load keystore properties if available (optional for local builds without signing)
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+def hasKeystoreConfig = keystorePropertiesFile.exists()
+if (hasKeystoreConfig) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+// Maps API key from local.properties (never commit real keys)
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file("local.properties")
+if (localPropertiesFile.exists()) {
+    localProperties.load(new FileInputStream(localPropertiesFile))
+}
+def mapsApiKey = localProperties.getProperty("MAPS_API_KEY", "")
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.0"
+    namespace 'letshangllc.letsride'
+    compileSdk 36
+
+    if (hasKeystoreConfig) {
+        signingConfigs {
+            release {
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "letshangllc.letsride"
-        minSdkVersion 11
-        targetSdkVersion 24
-        versionCode 4
-        versionName "1.15"
+        minSdk 24
+        targetSdk 36
+        versionCode 100
+        versionName "3.0.0"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+
+        // Injected from local.properties — owner must supply MAPS_API_KEY locally
+        resValue "string", "google_maps_key", (mapsApiKey != null && !mapsApiKey.isEmpty()) ? mapsApiKey : "MISSING_MAPS_API_KEY"
+        manifestPlaceholders = [mapsApiKey: (mapsApiKey != null && !mapsApiKey.isEmpty()) ? mapsApiKey : "MISSING_MAPS_API_KEY"]
     }
+
     buildTypes {
+        debug {
+            // Debug builds use test ad IDs via src/debug/res/values/ad_config.xml
+        }
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            if (hasKeystoreConfig) {
+                signingConfig signingConfigs.release
+            }
         }
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError true
+        checkReleaseBuilds false
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'androidx.activity:activity:1.9.3'
+    implementation 'androidx.fragment:fragment:1.8.5'
+    implementation 'androidx.core:core:1.15.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
 
+    // Google Maps + Location (current SDKs)
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 
+    // Google Mobile Ads SDK (AdMob)
+    implementation 'com.google.android.gms:play-services-ads:23.6.0'
 
-    compile 'com.android.support:design:24.0.0'
-    compile 'com.amazon.android:mobile-ads:5.7.2'
-    compile 'com.google.android.gms:play-services-ads:9.2.1'
-    compile 'com.google.android.gms:play-services-maps:9.2.1'
-    compile 'com.google.android.gms:play-services-location:9.2.1'
+    // User Messaging Platform (UMP) for GDPR/consent
+    implementation 'com.google.android.ump:user-messaging-platform:3.1.0'
 
-    compile 'com.pavelsikun:material-seekbar-preference:2.3.0+'
-    compile 'com.android.support:support-v4:24.0.0'
+    // Graphs
+    implementation 'com.jjoe64:graphview:4.2.2'
 
-    compile 'com.jjoe64:graphview:4.1.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }

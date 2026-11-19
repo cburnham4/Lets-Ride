@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sample="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <!-- Speed -->
     <ListPreference
         android:key="@string/user_pref_speed_unit_index"
         android:title="@string/speed_units"
@@ -10,9 +9,8 @@
         android:entries="@array/speed_units"
         android:entryValues="@array/speed_indexes"
         android:defaultValue="0"
-        android:summary="Select your preferred speed units"/>
+        android:summary="Select your preferred speed units" />
 
-    <!-- Distance -->
     <ListPreference
         android:key="@string/user_pref_distance_index"
         android:title="@string/distance_units"
@@ -20,9 +18,8 @@
         android:entries="@array/length_units"
         android:entryValues="@array/length_indexes"
         android:defaultValue="0"
-        android:summary="Select your preferred distance units"/>
+        android:summary="Select your preferred distance units" />
 
-    <!-- Elevation -->
     <ListPreference
         android:key="@string/user_pref_elevation_index"
         android:title="@string/elevation_units"
@@ -30,17 +27,15 @@
         android:entries="@array/length_units"
         android:entryValues="@array/length_indexes"
         android:defaultValue="0"
-        android:summary="Select your preferred elevation units"/>
+        android:summary="Select your preferred elevation units" />
 
-    <com.pavelsikun.seekbarpreference.SeekBarPreference
+    <SeekBarPreference
         android:key="@string/user_pref_min_time_loc_request"
         android:title="Location Request Interval"
         android:summary="Increasing value will decrease battery and data usage but will decrease the application's accuracy."
         android:defaultValue="3"
-        sample:msbp_minValue="1"
-        sample:msbp_maxValue="60"
-        sample:msbp_interval="1"
-        sample:msbp_measurementUnit="sec"
-        sample:msbp_dialogEnabled="false"/>
+        android:max="60"
+        app:min="1"
+        app:showSeekBarValue="true" />
 
 </PreferenceScreen>

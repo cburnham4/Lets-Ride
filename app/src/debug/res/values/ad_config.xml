@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    DEBUG BUILD: Google's official test AdMob IDs.
+    Production placeholders live in app/src/main/res/values/ad_config.xml
+-->
+<resources>
+    <string name="admob_app_id">ca-app-pub-3940256099942544~3347511713</string>
+
+    <string name="admob_id_history">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_ad_id_record">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="admob_ad_id_settings">ca-app-pub-3940256099942544/6300978111</string>
+
+    <integer name="ad_refresh_rate">60000</integer>
+</resources>

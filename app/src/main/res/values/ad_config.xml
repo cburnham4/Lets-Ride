@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    RELEASE / MAIN AdMob configuration for Let's Ride (letshangllc.letsride)
+
+    Publisher: ca-app-pub-8223005482588566
+
+    Real unit IDs were previously stored in a gitignored keys.xml and are NOT in this repo.
+    Replace every TODO_* placeholder with the real AdMob IDs from the AdMob console
+    before shipping a release build.
+
+    Debug builds override these with Google's official test IDs via:
+      app/src/debug/res/values/ad_config.xml
+-->
+<resources>
+    <!-- TODO: Replace with real AdMob Application ID for Let's Ride -->
+    <string name="admob_app_id">ca-app-pub-8223005482588566~TODO_APP_ID</string>
+
+    <!-- TODO: Replace with real banner unit IDs for each screen -->
+    <string name="admob_id_history">ca-app-pub-8223005482588566/TODO_BANNER_HISTORY</string>
+    <string name="admob_ad_id_record">ca-app-pub-8223005482588566/TODO_BANNER_RECORD</string>
+    <string name="admob_ad_id_settings">ca-app-pub-8223005482588566/TODO_BANNER_SETTINGS</string>
+
+    <!-- Ad refresh interval (ms). AdsHelper also enforces a minimum interval. -->
+    <integer name="ad_refresh_rate">60000</integer>
+</resources>
