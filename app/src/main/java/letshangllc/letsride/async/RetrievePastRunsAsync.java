@@ -82,18 +82,18 @@ public class RetrievePastRunsAsync extends AsyncTask<Void, Void, ArrayList<PastR
 
         /* Iterate throught the cursor to get the runs */
         while(!c.isAfterLast()){
-            int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
+            int runId = c.getInt(c.getColumnIndexOrThrow(DBTableConstants.RUN_ID));
             /* If it is a new runId then add all the run Id to that run */
             if(runId != prevRunId){
                 prevRunId = runId;
-                date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
-                duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-                distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
-                maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
-                avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
-                maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
-                minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
-                startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
+                date = c.getString(c.getColumnIndexOrThrow(DBTableConstants.DATE_STRING));
+                duration = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_DURATION));
+                distance = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_DISTANCE));
+                maxSpeed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MAX_SPEED));
+                avgSpeed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_AVG_SPEED));
+                maxElevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MAX_ELEVATION));
+                minElevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MIN_ELEVATION));
+                startTime = c.getLong(c.getColumnIndexOrThrow(DBTableConstants.RUN_START_TIME));
                 Log.i(TAG, "START TIME: " +startTime);
                 pastRunItem = new PastRunItem(runId, dayId, date, duration, distance, startTime, maxSpeed, avgSpeed,
                         maxElevation, minElevation);
@@ -101,10 +101,10 @@ public class RetrievePastRunsAsync extends AsyncTask<Void, Void, ArrayList<PastR
             }
 
             /* Add the locations, speed and elevation to the current run */
-            double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
-            double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
-            double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
-            double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
+            double lat = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_LAT));
+            double lon = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_LONG));
+            double speed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_SPEED));
+            double elevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_ELEVATION));
             pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
 
             c.moveToNext();

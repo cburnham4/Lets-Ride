@@ -1,105 +1,174 @@
 package letshangllc.letsride.helpers;
 
 import android.app.Activity;
-import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowMetrics;
 
-import com.amazon.device.ads.Ad;
-import com.amazon.device.ads.AdError;
-import com.amazon.device.ads.AdListener;
-import com.amazon.device.ads.AdProperties;
-import com.amazon.device.ads.AdRegistration;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.ump.ConsentDebugSettings;
+import com.google.android.ump.ConsentInformation;
+import com.google.android.ump.ConsentRequestParameters;
+import com.google.android.ump.UserMessagingPlatform;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import letshangllc.letsride.BuildConfig;
 import letshangllc.letsride.R;
 
-
 /**
- * Created by cvburnha on 10/26/2015.
+ * AdMob banners with UMP consent. Amazon Mobile Ads removed (cleartext / dead SDK).
  */
-public class AdsHelper implements AdListener {
-    String amazon_id;
-    String admob_id;
+public class AdsHelper {
+    private static final String TAG = "AdsHelper";
+    private static final long MIN_REFRESH_INTERVAL_MS = 60_000L;
 
-    Activity activity;
-    View view;
-    private boolean amazonAdEnabled;
-
-    Handler handler = new Handler();
+    private final String admobId;
+    private final Activity activity;
+    private final View view;
 
     private ViewGroup adViewContainer;
-    private com.amazon.device.ads.AdLayout amazonAdView;
-    private com.google.android.gms.ads.AdView admobAdView;
+    private AdView admobAdView;
+    private ConsentInformation consentInformation;
+    private long lastRefreshMs = 0L;
 
-    public AdsHelper(View view, String admob_id, Activity activity){
-        this.admob_id = admob_id;
-        this.amazon_id = activity.getResources().getString(R.string.amazon_ad_id);
+    private static final AtomicBoolean isMobileAdsInitializeCalled = new AtomicBoolean(false);
+
+    public AdsHelper(View view, String admobId, Activity activity) {
+        this.admobId = admobId;
         this.activity = activity;
-        this.view =view;
+        this.view = view;
     }
 
-    public void setUpAds(){
-        AdRegistration.setAppKey(amazon_id);
-        amazonAdView = new com.amazon.device.ads.AdLayout(activity, com.amazon.device.ads.AdSize.SIZE_320x50);
-        amazonAdView.setListener(this);
-       // AdRegistration.enableTesting(true);
+    public void setUpAds() {
+        ConsentRequestParameters.Builder paramsBuilder = new ConsentRequestParameters.Builder()
+                .setTagForUnderAgeOfConsent(false);
 
-        admobAdView = new com.google.android.gms.ads.AdView(activity);
-        admobAdView.setAdSize(com.google.android.gms.ads.AdSize.BANNER);
-        admobAdView.setAdUnitId(admob_id);
+        if (BuildConfig.DEBUG) {
+            ConsentDebugSettings debugSettings = new ConsentDebugSettings.Builder(activity)
+                    .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                    .addTestDeviceHashedId(AdRequest.DEVICE_ID_EMULATOR)
+                    .build();
+            paramsBuilder.setConsentDebugSettings(debugSettings);
+        }
 
-        // Initialize view container
-        adViewContainer = (ViewGroup) view.findViewById(R.id.ad_layout);
-        amazonAdEnabled = true;
-        adViewContainer.addView(amazonAdView);
+        ConsentRequestParameters params = paramsBuilder.build();
 
-        amazonAdView.loadAd(new com.amazon.device.ads.AdTargetingOptions());
-    }
+        consentInformation = UserMessagingPlatform.getConsentInformation(activity);
+        consentInformation.requestConsentInfoUpdate(
+                activity,
+                params,
+                () -> UserMessagingPlatform.loadAndShowConsentFormIfRequired(
+                        activity,
+                        loadAndShowError -> {
+                            if (loadAndShowError != null) {
+                                Log.w(TAG, String.format("Consent form error: %d: %s",
+                                        loadAndShowError.getErrorCode(),
+                                        loadAndShowError.getMessage()));
+                            }
+                            if (consentInformation.canRequestAds()) {
+                                initializeMobileAds();
+                            }
+                        }
+                ),
+                requestConsentError -> {
+                    Log.w(TAG, String.format("Consent request error: %d: %s",
+                            requestConsentError.getErrorCode(),
+                            requestConsentError.getMessage()));
+                    if (consentInformation.canRequestAds()) {
+                        initializeMobileAds();
+                    }
+                }
+        );
 
-
-    public void refreshAd()
-    {
-        amazonAdView.loadAd(new com.amazon.device.ads.AdTargetingOptions());
-    }
-
-    @Override
-    public void onAdLoaded(Ad ad, AdProperties adProperties) {
-        if (!amazonAdEnabled)
-        {
-            amazonAdEnabled = true;
-            adViewContainer.removeView(admobAdView);
-            adViewContainer.addView(amazonAdView);
+        if (consentInformation.canRequestAds()) {
+            initializeMobileAds();
         }
     }
 
-    @Override
-    public void onAdFailedToLoad(Ad ad, AdError adError) {
-        // Call AdMob SDK for backfill
-        Log.e("ADERROR", adError.getMessage());
-        if (amazonAdEnabled)
-        {
-            amazonAdEnabled = false;
-            adViewContainer.removeView(amazonAdView);
-            adViewContainer.addView(admobAdView);
+    private void initializeMobileAds() {
+        if (isMobileAdsInitializeCalled.getAndSet(true)) {
+            activity.runOnUiThread(this::loadBannerAd);
+            return;
         }
-//        AdRequest.Builder.addTestDevice("04CD51A7A1F806B7F55CADD6A3B84E92");
-        admobAdView.loadAd((new com.google.android.gms.ads.AdRequest.Builder()).build());
+
+        new Thread(() -> MobileAds.initialize(activity, initializationStatus ->
+                activity.runOnUiThread(this::loadBannerAd)
+        )).start();
     }
 
-    @Override
-    public void onAdExpanded(Ad ad) {
+    private void loadBannerAd() {
+        adViewContainer = view.findViewById(R.id.ad_layout);
+        if (adViewContainer == null) {
+            Log.e(TAG, "Ad container view not found");
+            return;
+        }
 
+        admobAdView = new AdView(activity);
+        admobAdView.setAdUnitId(admobId);
+        admobAdView.setAdSize(getAdaptiveAdSize());
+
+        adViewContainer.removeAllViews();
+        adViewContainer.addView(admobAdView);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        admobAdView.loadAd(adRequest);
+        lastRefreshMs = System.currentTimeMillis();
     }
 
-    @Override
-    public void onAdCollapsed(Ad ad) {
+    private AdSize getAdaptiveAdSize() {
+        DisplayMetrics displayMetrics = activity.getResources().getDisplayMetrics();
+        int adWidthPixels = displayMetrics.widthPixels;
 
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R) {
+            WindowMetrics windowMetrics = activity.getWindowManager().getCurrentWindowMetrics();
+            adWidthPixels = windowMetrics.getBounds().width();
+        }
+
+        int adWidth = (int) (adWidthPixels / displayMetrics.density);
+        return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(activity, adWidth);
     }
 
-    @Override
-    public void onAdDismissed(Ad ad) {
-
+    /**
+     * Refresh the banner if consent allows and the minimum interval has elapsed.
+     */
+    public void refreshAd() {
+        if (admobAdView == null || consentInformation == null || !consentInformation.canRequestAds()) {
+            return;
+        }
+        long now = System.currentTimeMillis();
+        if (now - lastRefreshMs < MIN_REFRESH_INTERVAL_MS) {
+            return;
+        }
+        lastRefreshMs = now;
+        activity.runOnUiThread(() -> {
+            if (admobAdView != null) {
+                admobAdView.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 
+    public void onPause() {
+        if (admobAdView != null) {
+            admobAdView.pause();
+        }
+    }
+
+    public void onResume() {
+        if (admobAdView != null) {
+            admobAdView.resume();
+        }
+    }
+
+    public void onDestroy() {
+        if (admobAdView != null) {
+            admobAdView.destroy();
+            admobAdView = null;
+        }
+    }
 }

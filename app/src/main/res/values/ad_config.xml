@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    RELEASE / MAIN AdMob configuration for Let's Ride (letshangllc.letsride)
+
+    Publisher: ca-app-pub-8223005482588566
+    App ID from AdMob console CSV (Nov 2026).
+
+    Screen / resource mapping:
+      HistoryActivity          -> Banner History  (admob_id_history)
+      RecordRunActivity        -> Banner Main     (admob_ad_id_record; no "record" unit — reuse main)
+      SettingsActivity         -> Banner Settings (admob_ad_id_settings)
+      Banner stats             -> admob_id_stats  (present in console; RunInfo ads remain off)
+
+    Debug builds override with Google test IDs via:
+      app/src/debug/res/values/ad_config.xml
+-->
+<resources>
+    <string name="admob_app_id">ca-app-pub-8223005482588566~9480670331</string>
+
+    <!-- Banner History -->
+    <string name="admob_id_history">ca-app-pub-8223005482588566/3357607939</string>
+    <!-- Banner Main (used for RecordRun — no dedicated record unit) -->
+    <string name="admob_ad_id_record">ca-app-pub-8223005482588566/1957403531</string>
+    <!-- Banner Settings -->
+    <string name="admob_ad_id_settings">ca-app-pub-8223005482588566/3434136735</string>
+    <!-- Banner stats (console unit; not shown while RunInfo ads stay disabled) -->
+    <string name="admob_id_stats">ca-app-pub-8223005482588566/4834341139</string>
+
+    <!-- Ad refresh interval (ms). AdsHelper also enforces a minimum interval. -->
+    <integer name="ad_refresh_rate">60000</integer>
+</resources>

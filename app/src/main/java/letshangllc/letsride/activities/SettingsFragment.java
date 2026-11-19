@@ -1,20 +1,17 @@
 package letshangllc.letsride.activities;
 
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+
+import androidx.preference.PreferenceFragmentCompat;
 
 import letshangllc.letsride.R;
 
 /**
- * Created by Carl on 8/11/2016.
+ * Settings preferences (AndroidX PreferenceFragmentCompat).
  */
-public class SettingsFragment extends PreferenceFragment {
+public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.preference_settings);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        setPreferencesFromResource(R.xml.preference_settings, rootKey);
     }
-
 }

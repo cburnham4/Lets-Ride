@@ -5,21 +5,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -29,7 +27,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import letshangllc.letsride.R;
-
 import letshangllc.letsride.activities.runinfo.RunInfoTabbedActivity;
 import letshangllc.letsride.adapter.HistoryItemsAdapter;
 import letshangllc.letsride.adapter.RecyclerViewClickListener;
@@ -42,29 +39,28 @@ import letshangllc.letsride.data_objects.PastRunItem;
 import letshangllc.letsride.enums.LengthUnits;
 import letshangllc.letsride.enums.SpeedUnits;
 import letshangllc.letsride.helpers.AdsHelper;
+import letshangllc.letsride.helpers.EdgeToEdgeHelper;
 
 public class HistoryActivity extends AppCompatActivity implements RecyclerViewClickListener {
     private final static String TAG = HistoryActivity.class.getSimpleName();
 
-    /* Intent requests */
     private final static int SETTING_REQUEST = 10;
     private final static int RECORD_TRACKER_REQUEST = 11;
 
-    /* Recycleview items */
     private ArrayList<PastRunItem> pastRunItems;
     private HistoryItemsAdapter historyItemsAdapter;
 
-    /* Database helper */
     private LocationDatabaseHelper databaseHelper;
-
-    /* Day Id */
     private int dayId;
+    private AdsHelper adsHelper;
+    private Timer adTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
+        EdgeToEdgeHelper.apply(this);
 
-        /* Call Private Methods */
         this.setupToolbar();
         this.getDay();
         this.findViews();
@@ -72,14 +68,12 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
         this.runAds();
     }
 
-    /* Setup Toolbar */
-    private void setupToolbar(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+    private void setupToolbar() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
     }
 
-    /* Get all the previous run data */
-    private void getRunData(){
+    private void getRunData() {
         new RetrievePastRunsAsync(databaseHelper, this, dayId, new RetrievePastComplete() {
             @Override
             public void onRetrievalComplete(ArrayList<PastRunItem> pastRunItems) {
@@ -88,129 +82,54 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 setupRecycleView();
             }
         }).execute();
-        /*
-        String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
-            + DBTableConstants.RUNS_TABLE + " ON " +
-            DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
-            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
-
-            " INNER JOIN "
-            + DBTableConstants.DATES_TABLE + " ON " +
-            DBTableConstants.DATES_TABLE + "." +DBTableConstants.DATE_ID +" = " +
-            DBTableConstants.RUNS_TABLE +"." + DBTableConstants.DATE_ID +
-
-            " ORDER BY " + DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID + " DESC";
-
-        SQLiteDatabase db = databaseHelper.getReadableDatabase();
-
-//        /* Run the query */
-//        Cursor c = db.rawQuery(sql, null);
-//        c.moveToFirst();
-//
-//        if(c.getCount() == 0){
-//            c.close();
-//            db.close();
-//            return;
-//        }
-//
-//        pastRunItems = new ArrayList<>();
-//
-//        /* Create variables */
-//        int prevRunId = -1;
-//        PastRunItem pastRunItem = null;
-//        String date;
-//        double duration, distance, maxSpeed, avgSpeed, maxElevation, minElevation;
-//        long startTime;
-//
-//
-//        /* Iterate throught the cursor to get the runs */
-//        while(!c.isAfterLast()){
-//            int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
-//            /* If it is a new runId then add all the run Id to that run */
-//            if(runId != prevRunId){
-//                prevRunId = runId;
-//                date = c.getString(c.getColumnIndex(DBTableConstants.DATE_STRING));
-//                duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-//                distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
-//                maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
-//                avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
-//                maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
-//                minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
-//                startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
-//                Log.i(TAG, "START TIME: " +startTime);
-//                pastRunItem = new PastRunItem(runId, dayId, date, duration, distance, startTime, maxSpeed, avgSpeed,
-//                        maxElevation, minElevation);
-//                pastRunItems.add(pastRunItem);
-//            }
-//
-//            /* Add the locations, speed and elevation to the current run */
-//            double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
-//            double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
-//            double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
-//            double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
-//            pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
-//
-//            c.moveToNext();
-//        }
-//        c.close();
-//        db.close();
-//        */
     }
 
-    /* Get the most recent run */
-    private void getRecentRun(){
-       // String sqlGetRun = "SELECT MAX("+DBTableConstants.RUN_ID
+    private void getRecentRun() {
         String sql = "SELECT * FROM " + DBTableConstants.LOCATION_TABLE_NAME + " INNER JOIN "
                 + DBTableConstants.RUNS_TABLE + " ON " +
-                DBTableConstants.LOCATION_TABLE_NAME + "." +DBTableConstants.RUN_ID +" = " +
-                DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +
+                DBTableConstants.LOCATION_TABLE_NAME + "." + DBTableConstants.RUN_ID + " = " +
+                DBTableConstants.RUNS_TABLE + "." + DBTableConstants.RUN_ID +
 
-                " WHERE " +DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID + " = " +
-                    "(SELECT MAX(" +DBTableConstants.RUNS_TABLE +"." + DBTableConstants.RUN_ID +")"+
-                    "FROM " + DBTableConstants.RUNS_TABLE +" ) ";
+                " WHERE " + DBTableConstants.RUNS_TABLE + "." + DBTableConstants.RUN_ID + " = " +
+                "(SELECT MAX(" + DBTableConstants.RUNS_TABLE + "." + DBTableConstants.RUN_ID + ")" +
+                "FROM " + DBTableConstants.RUNS_TABLE + " ) ";
 
         SQLiteDatabase db = databaseHelper.getReadableDatabase();
-
-        /* Run the query */
         Cursor c = db.rawQuery(sql, null);
         c.moveToFirst();
 
-        if(c.getCount() == 0){
+        if (c.getCount() == 0) {
             c.close();
             db.close();
             return;
         }
 
-        /* Get the current date since we know the most current run would be today */
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format), Locale.US);
         Date date = new Date();
         String currentDate = dateFormat.format(date);
 
         PastRunItem pastRunItem = null;
 
-        /* Get all the run information */
-        if(!c.isAfterLast()){
-            int runId = c.getInt(c.getColumnIndex(DBTableConstants.RUN_ID));
-            double duration = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DURATION));
-            double distance = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_DISTANCE));
-            double maxSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_SPEED));
-            double avgSpeed = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_AVG_SPEED));
-            double maxElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MAX_ELEVATION));
-            double minElevation = c.getDouble(c.getColumnIndex(DBTableConstants.RUN_MIN_ELEVATION));
-            long startTime = c.getLong(c.getColumnIndex(DBTableConstants.RUN_START_TIME));
+        if (!c.isAfterLast()) {
+            int runId = c.getInt(c.getColumnIndexOrThrow(DBTableConstants.RUN_ID));
+            double duration = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_DURATION));
+            double distance = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_DISTANCE));
+            double maxSpeed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MAX_SPEED));
+            double avgSpeed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_AVG_SPEED));
+            double maxElevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MAX_ELEVATION));
+            double minElevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.RUN_MIN_ELEVATION));
+            long startTime = c.getLong(c.getColumnIndexOrThrow(DBTableConstants.RUN_START_TIME));
             pastRunItem = new PastRunItem(runId, dayId, currentDate, duration, distance, startTime, maxSpeed, avgSpeed,
                     maxElevation, minElevation);
             pastRunItems.add(0, pastRunItem);
         }
 
-        /* Add all the location information for that run */
-        while(!c.isAfterLast()){
-            double lat = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LAT));
-            double lon = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_LONG));
-            double speed = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_SPEED));
-            double elevation = c.getDouble(c.getColumnIndex(DBTableConstants.LOCATION_ELEVATION));
+        while (!c.isAfterLast()) {
+            double lat = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_LAT));
+            double lon = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_LONG));
+            double speed = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_SPEED));
+            double elevation = c.getDouble(c.getColumnIndexOrThrow(DBTableConstants.LOCATION_ELEVATION));
             pastRunItem.pastLocations.add(new PastLocation(lat, lon, speed, elevation));
-
             c.moveToNext();
         }
         historyItemsAdapter.notifyDataSetChanged();
@@ -226,22 +145,18 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
         SpeedUnits speedUnits = SpeedUnits.getSpeedUnit(speedUnitIndex);
         LengthUnits lengthUnits = LengthUnits.getLengthUnits(elevationUnitIndex);
-        LengthUnits distanceUnits =LengthUnits.getLengthUnits(distanceUnitIndex);
+        LengthUnits distanceUnits = LengthUnits.getLengthUnits(distanceUnitIndex);
         historyItemsAdapter = new HistoryItemsAdapter(pastRunItems, this, distanceUnits,
                 speedUnits, this);
 
-        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvHistoryOfRuns);
-
+        final RecyclerView recyclerView = findViewById(R.id.rvHistoryOfRuns);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
-
-
         recyclerView.setAdapter(historyItemsAdapter);
     }
 
-    private void findViews(){
-        Button btnStartTracking = (Button) findViewById(R.id.btnTrackActivity);
-
+    private void findViews() {
+        Button btnStartTracking = findViewById(R.id.btnTrackActivity);
         btnStartTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -250,73 +165,39 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
                 startActivityForResult(intent, RECORD_TRACKER_REQUEST);
             }
         });
-
-//        Spinner spinner = (Spinner) findViewById(R.id.spinHistorySelection);
-//// Create an ArrayAdapter using the string array and a default spinner layout
-//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-//                R.array.history_times, R.layout.item_spinner);
-//// Specify the layout to use when the list of choices appears
-//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//// Apply the adapter to the spinner
-//        spinner.setAdapter(adapter);
-//
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//
-//            }
-//        });
     }
 
-    private void getDay(){
+    private void getDay() {
         SimpleDateFormat dateFormat = new SimpleDateFormat(getString(R.string.date_format), Locale.US);
         Date date = new Date();
         String currentDate = dateFormat.format(date);
 
         databaseHelper = new LocationDatabaseHelper(this);
-                /* First check if the db row has already been created */
         SQLiteDatabase db = databaseHelper.getWritableDatabase();
         String[] projection = {DBTableConstants.DATE_ID};
 
-        /* Query the exercise table based on the muscle id to get all the associated exercises */
         Cursor c = db.query(DBTableConstants.DATES_TABLE, projection, DBTableConstants.DATE_STRING
-                + " = '" + currentDate +"'", null, null, null, null);
+                + " = '" + currentDate + "'", null, null, null, null);
 
         c.moveToFirst();
-        /* If there already exists a dayId for today then return it */
-        if(!c.isAfterLast()){
+        if (!c.isAfterLast()) {
             Log.e(TAG, "Day exists");
             dayId = c.getInt(0);
             c.close();
-        }else{
-            /* If there is no day id for the current day then insert it */
+        } else {
             Log.e(TAG, "Day does not exist");
-
-            /* Else insert in a new day */
             ContentValues values = new ContentValues();
             values.put(DBTableConstants.DATE_STRING, currentDate);
-
-            /* Insert values into db */
             dayId = (int) db.insert(DBTableConstants.DATES_TABLE, null, values);
             db.close();
         }
-
     }
 
-
-    /* Run when a machine has been clicked */
     @Override
     public void recyclerViewListClicked(View v, final int position) {
         final PastRunItem pastRunItem = pastRunItems.get(position);
-
         Intent intent = new Intent(HistoryActivity.this, RunInfoTabbedActivity.class);
         intent.putExtra(getString(R.string.past_run_item_extra), pastRunItem);
-
         startActivity(intent);
     }
 
@@ -329,53 +210,69 @@ public class HistoryActivity extends AppCompatActivity implements RecyclerViewCl
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent intent =  new Intent(HistoryActivity.this, SettingsActivity.class);
-                startActivityForResult(intent, SETTING_REQUEST);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+        if (item.getItemId() == R.id.action_settings) {
+            Intent intent = new Intent(HistoryActivity.this, SettingsActivity.class);
+            startActivityForResult(intent, SETTING_REQUEST);
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode){
+        switch (requestCode) {
             case SETTING_REQUEST:
-
-                Log.i(TAG, "Returned from settings ");
                 HistoryActivity.this.setupRecycleView();
                 break;
             case RECORD_TRACKER_REQUEST:
-                if(resultCode == RESULT_CANCELED){
-                    Log.i(TAG, "Result Canceled");
-                }
-                if(resultCode == RESULT_OK){
-                    Log.i(TAG, "Result Ok");
-                    /* Get just the most recent Run */
+                if (resultCode == RESULT_OK) {
                     this.getRecentRun();
-                    //HistoryActivity.this.setupRecycleView();
                 }
                 break;
         }
     }
 
-    private AdsHelper adsHelper;
-    public void runAds(){
-        adsHelper =  new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_id_history), this);
-
+    public void runAds() {
+        adsHelper = new AdsHelper(getWindow().getDecorView(), getResources().getString(R.string.admob_id_history), this);
         adsHelper.setUpAds();
-        int delay = 1000; // delay for 1 sec.
+        int delay = 1000;
         int period = getResources().getInteger(R.integer.ad_refresh_rate);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+        adTimer = new Timer();
+        adTimer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
-                adsHelper.refreshAd();  // display the data
+                if (adsHelper != null) {
+                    adsHelper.refreshAd();
+                }
             }
         }, delay, period);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (adsHelper != null) {
+            adsHelper.onPause();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adsHelper != null) {
+            adsHelper.onResume();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adTimer != null) {
+            adTimer.cancel();
+            adTimer = null;
+        }
+        if (adsHelper != null) {
+            adsHelper.onDestroy();
+        }
+        super.onDestroy();
+    }
 }
